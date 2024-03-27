@@ -10,7 +10,8 @@
 <body>
 <div class="g-signin2" data-onsuccess="onSignIn"></div>
   
-  <a href="#" onclick="signOut();">Sign out</a>
+<a href="#" onclick="signOut();">Sign out</a>
+
 <script>
   function signOut() {
     var auth2 = gapi.auth2.getAuthInstance();
@@ -18,17 +19,35 @@
       console.log('User signed out.');
     });
   }
+
+  function onSignIn(googleUser) {
+    var profile = googleUser.getBasicProfile();
+    console.log('ID: ' + profile.getId());
+    console.log('Name: ' + profile.getName());
+    console.log('Image URL: ' + profile.getImageUrl());
+    console.log('Email: ' + profile.getEmail());
+
+    // Show alert box and text based on sign-in status
+    if (profile.getId()) {
+      alert('Sign-in successful!');
+      document.getElementById('status').innerHTML = 'Signed in as: ' + profile.getName();
+    } else {
+      alert('Sign-in failed!');
+      document.getElementById('status').innerHTML = 'Sign-in failed!';
+    }
+  }
+
+  // Initialize Google API client library
+  function init() {
+    gapi.load('auth2', function() {
+      gapi.auth2.init();
+    });
+  }
+  // Call init function when the page loads
+  init();
 </script>
-<script>
-function onSignIn(googleUser) {
-  var profile = googleUser.getBasicProfile();
-  console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-  console.log('Name: ' + profile.getName());
-  console.log('Image URL: ' + profile.getImageUrl());
-  console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-}
-</script>
+
+<p id="status"></p>
 
 </body>
-
 </html>
