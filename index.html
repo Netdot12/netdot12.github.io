@@ -20,14 +20,7 @@
     <script>
         // Function to execute when Google Sign-In is successful
         function onSignIn(googleUser) {
-            var profile = googleUser.getBasicProfile();
-            var userName = profile.getName();
-            // Display user's name
-            document.getElementById('userName').textContent = userName;
-            // Show user profile section
-            document.getElementById('userProfile').style.display = 'block';
-            // Redirect user to a different page after sign-in
-            window.location.href = "welcome.html"; // Change "welcome.html" to the desired page
+            alert("This is an alert box!");
         }
     </script>
 </body>
