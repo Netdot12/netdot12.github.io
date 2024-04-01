@@ -1,7 +1,7 @@
 <?php
 // Array of file paths
 $songPaths = [
-    "greedy" => "/storage/emulated/0/Venter/HopWeb/Projects/Practice/greedy.mp3",
+    "greedy" => "/storage/emulated/0/My website/Alan Walker/Cristale.mp3",
     "11 ilomilo" => "/storage/emulated/0/Venter/HopWeb/Projects/Practice/11 ilomilo.mp3",
     "yet_another_song" => "/storage/emulated/0/Venter/HopWeb/Projects/Practice/yet_another_song.mp3"
 ];
