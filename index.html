@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+</head>
+<body>
+    <h1>Music Player</h1>
+    <audio id="audioPlayer" controls>
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        // Play Song 2 by default (you can change this as needed)
+        document.getElementById('audioPlayer').src = 'backend.php?song_id=2';
+    </script>
+</body>
+</html>
