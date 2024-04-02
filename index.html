@@ -3,15 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Audio Source</title>
+    <title>Google Sign-In Test</title>
+    <!-- Include the Google Sign-In library -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <!-- Specify the OAuth client ID -->
+    <meta name="google-signin-client_id" content="653692805628-6phs8eh9iusc15k12qd2kkjp69rodllc.apps.googleusercontent.com">
 </head>
 <body>
-    <h1>Dyle</h1>
+    <h1>Google Sign-In Test</h1>
+    <!-- Display Google Sign-In button -->
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+    
+    <!-- Display user's name after successful sign-in -->
+    <div id="userProfile" style="display: none;">
+        <h2>Welcome, <span id="userName"></span>!</h2>
+    </div>
 
-    <!-- HTML audio element with src attribute set to audio.php -->
-    <audio controls>
-        <source src="audio.php?song=greedy" type="audio/mp3">
-        Your browser does not support the audio element.
-    </audio>
+    <script>
+        // Function to execute when Google Sign-In is successful
+        function onSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            var userName = profile.getName();
+            // Display user's name
+            document.getElementById('userName').textContent = userName;
+            // Show user profile section
+            document.getElementById('userProfile').style.display = 'block';
+            // Redirect user to a different page after sign-in
+            window.location.href = "welcome.html"; // Change "welcome.html" to the desired page
+        }
+    </script>
 </body>
 </html>
+
+What does this code
