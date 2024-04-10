@@ -1,38 +1,149 @@
 <!DOCTYPE html>
-<html lang="en">
+
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Sign-In Test</title>
-    <!-- Include the Google Sign-In library -->
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
-    <!-- Specify the OAuth client ID -->
-    <meta name="google-signin-client_id" content="653692805628-6phs8eh9iusc15k12qd2kkjp69rodllc.apps.googleusercontent.com">
+
+	<meta name="referrer" content="no-referrer-when-downgrade">
+
+	<meta name="Cross-Origin-Opener-Policy" content="same-origin-allow-popups">
+
+	<title>Tuneflix Login</title>
+
+	<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+	<style type="text/css">
+
+		
+
+	</style>
+
 </head>
+
 <body>
-    <h1>Google Sign-In Test</h1>
-    <!-- Display Google Sign-In button -->
-    <div class="g-signin2" data-onsuccess="onSignIn"></div>
-    
-    <!-- Display user's name after successful sign-in -->
-    <div id="userProfile" style="display: none;">
-        <h2>Welcome, <span id="userName"></span>!</h2>
-    </div>
 
-    <script>
-        // Function to execute when Google Sign-In is successful
-        function onSignIn(googleUser) {
-            var profile = googleUser.getBasicProfile();
-            var userName = profile.getName();
-            // Display user's name
-            document.getElementById('userName').textContent = userName;
-            // Show user profile section
-            document.getElementById('userProfile').style.display = 'block';
-            // Redirect user to a different page after sign-in
-            window.location.href = "welcome.html"; // Change "welcome.html" to the desired page
-        }
-    </script>
+<div>
+
+	<div id="g_id_onload"
+
+	     data-client_id="1077614564692-et69ov65f2276o3l65mhbgfv9q6uni6v"
+
+	     data-context="signin"
+
+	     data-ux_mode="popup"
+
+	     data-callback="gloginResponse"
+
+	     data-auto_prompt="false">
+
+	</div>
+
+
+
+	<div class="g_id_signin"
+
+	     data-type="standard"
+
+	     data-shape="rectangular"
+
+	     data-theme="outline"
+
+	     data-text="signin_with"
+
+	     data-size="large"
+
+	     data-logo_alignment="left">
+
+	</div>
+
+
+
+	<div id="profile">
+
+		<div class="image" id="img"></div>
+
+		<div class="username" id="username"></div>
+
+		<div class="email" id="email"></div>
+
+	</div>
+
+</div>
+
+<script>
+
+
+
+    function gloginResponse(response) {
+
+	    decodeJwtResponse(response.credential);
+
+	}
+
+
+
+	function decodeJwtResponse(data){
+
+	    //console.log(parseJwt(data))
+
+	    signIn(parseJwt(data))
+
+	}
+
+
+
+	function parseJwt (token) {
+
+	    var base64Url = token.split('.')[1];
+
+	    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+
+	    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+
+	        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+
+	    }).join(''));
+
+
+
+	    return JSON.parse(jsonPayload);
+
+	}
+
+
+
+	function signIn(data){
+
+
+
+		let img=document.getElementById('img');
+
+		let username=document.getElementById('username');
+
+		let email=document.getElementById('email');
+
+
+
+		img.innerHTML="<img src=\'" + data.picture + "\'>";
+
+		username.innerHTML=data.name;
+
+		email.innerHTML=data.email;
+
+
+
+		let loginbtn=document.getElementsByClassName('g_id_signin')[0];
+
+		loginbtn.style.display='none';
+
+
+
+	}
+
+
+
+</script>
+
 </body>
-</html>
 
-
+</html
