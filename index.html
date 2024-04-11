@@ -6,24 +6,23 @@
     <title>Tuneflix Login</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style type="text/css">
-        .comment {
+        #commentInput {
+            width: 70%;
+            margin-bottom: 10px;
+        }
+        #commentButton {
+            margin-bottom: 10px;
+        }
+        #commentContainer {
             margin-bottom: 20px;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 10px;
         }
-        .comment .image {
-            float: left;
-            margin-right: 10px;
-        }
-        .comment .image img {
-            width: 50px;
-            height: 50px;
+        #commentContainer .image img {
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
+            margin-right: 5px;
         }
-        .comment .content {
-            overflow: hidden;
-        }
-        .comment .username {
+        #commentContainer .username {
             font-weight: bold;
         }
     </style>
@@ -50,12 +49,12 @@
     <div id="profile">
         <div class="image" id="img"></div>
         <div class="username" id="username"></div>
-        <div class="email" id="email"></div>
     </div>
 </div>
 
-<div id="comments">
-    <!-- Comment section will be added here -->
+<div id="commentContainer">
+    <input type="text" id="commentInput" placeholder="Write a comment...">
+    <button onclick="postComment()" id="commentButton">Post Comment</button>
 </div>
 
 <script>
@@ -83,37 +82,38 @@
 
         let img=document.getElementById('img');
         let username=document.getElementById('username');
-        let email=document.getElementById('email');
 
         img.innerHTML="<img src=\'" + data.picture + "\'>";
         username.innerHTML=data.name;
-        email.innerHTML=data.email;
 
         let loginbtn=document.getElementsByClassName('g_id_signin')[0];
         loginbtn.style.display='none';
+    }
 
-        // Simulated comments
-        const comments = [
-            { name: "John Doe", picture: "https://via.placeholder.com/50" },
-            { name: "Jane Smith", picture: "https://via.placeholder.com/50" },
-            { name: "Alice Johnson", picture: "https://via.placeholder.com/50" }
-        ];
+    function postComment() {
+        const input = document.getElementById("commentInput");
+        const comment = input.value.trim();
+        if (comment === "") {
+            alert("Please enter a comment.");
+            return;
+        }
 
-        const commentsContainer = document.getElementById("comments");
-        comments.forEach(comment => {
-            const commentDiv = document.createElement("div");
-            commentDiv.classList.add("comment");
-            commentDiv.innerHTML = `
-                <div class="image">
-                    <img src="${comment.picture}" alt="Profile Picture">
-                </div>
-                <div class="content">
-                    <div class="username">${comment.name}</div>
-                    <div class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
-                </div>
-            `;
-            commentsContainer.appendChild(commentDiv);
-        });
+        const commentContainer = document.getElementById("commentContainer");
+
+        const commentDiv = document.createElement("div");
+        commentDiv.classList.add("comment");
+        commentDiv.innerHTML = `
+            <div class="image">
+                <img src="${document.getElementById('img').querySelector('img').src}" alt="Profile Picture">
+            </div>
+            <div class="content">
+                <div class="username">${document.getElementById('username').textContent}</div>
+                <div class="text">${comment}</div>
+            </div>
+        `;
+        commentContainer.insertAdjacentElement("afterend", commentDiv);
+
+        input.value = "";
     }
 
 </script>
