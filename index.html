@@ -9,29 +9,131 @@
 
   <title>Custom Social Media Sharing Widget</title>
   <style>
+ 
+  .social {
+    display:flex;
+    overflow-x:auto;
+  }
+  i {
+    
+    border:solid 3px;
+    border-radius:30px;
+    padding:10px;
+    margin:10px;
+    font-size:30px;
+    margin:10px;
+    width:30px;
+  }
   
+  #face {
+    border-color:#EEEEEE;
+    background-color:#fff;
+    color:blue; 
+  }
+  #what{
+    background-color:#50C878;
+    color:white;
+  }
+  #telegram-share-button {
+    height:30px;
+    background-color:skyblue;
+    color:white;
+  }
+ #twitter-share-button{
+   height:30px;
+   border-color:#EEEEEE;
+ }
+  .message{
+    height:30px;
+    width:30px;
+  }
+  #message-share-button{
+    height:30px;
+    border-color:#EEEEEE;
+    color:white;
+  }
+  #email-share-button{
+    height:30px;
+    border-color:#EEEEEE;
+    color:white;
+  }
   </style>  
 </head>
 <body>
 <div id="fb-root"></div>
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v19.0&appId=1134660687980407" nonce="D61DyJLv"></script>
-<span>
+<span class="social">
 <div id="shareButton" class="fb-share-button" data-href=" " data-layout="link" data-size="small">
   <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fexample.com&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">
     
   </a>
 </div>
+  <div id="whatsapp">
+    <a target="_blank" href="whatsapp://send?text=Check%20out%20this%20link:%20https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F" class="whatsapp-share-button">
+      <i  class="fab fa-whatsapp"></i> <!-- Font Awesome WhatsApp icon -->
+    </a>
+  </div>
+  
+ <i id="twitter-share-button" data-text="Check out this link!" data-url="" data-show-count="false" style="cursor:pointer;">
+    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30" viewBox="0 0 50 50">
+<path d="M 11 4 C 7.134 4 4 7.134 4 11 L 4 39 C 4 42.866 7.134 46 11 46 L 39 46 C 42.866 46 46 42.866 46 39 L 46 11 C 46 7.134 42.866 4 39 4 L 11 4 z M 13.085938 13 L 21.023438 13 L 26.660156 21.009766 L 33.5 13 L 36 13 L 27.789062 22.613281 L 37.914062 37 L 29.978516 37 L 23.4375 27.707031 L 15.5 37 L 13 37 L 22.308594 26.103516 L 13.085938 13 z M 16.914062 15 L 31.021484 35 L 34.085938 35 L 19.978516 15 L 16.914062 15 z"></path>
+</svg> 
+  </i>    
+  <i class="fab fa-telegram" id="telegram-share-button" data-text="Check out this link!" data-url="" style="cursor:pointer;"></i>
+ <i id="message-share-button" data-text="Check out this link!" data-url="" style="cursor:pointer;">
+     <img class="message" src="message.jpg">
+
+ </i>
+  
+  <i id="email-share-button" data-text="Check out this link!" data-url="" style="cursor:pointer;">
+    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30" viewBox="0 0 48 48">
+<path fill="#4caf50" d="M45,16.2l-5,2.75l-5,4.75L35,40h7c1.657,0,3-1.343,3-3V16.2z"></path><path fill="#1e88e5" d="M3,16.2l3.614,1.71L13,23.7V40H6c-1.657,0-3-1.343-3-3V16.2z"></path><polygon fill="#e53935" points="35,11.2 24,19.45 13,11.2 12,17 13,23.7 24,31.95 35,23.7 36,17"></polygon><path fill="#c62828" d="M3,12.298V16.2l10,7.5V11.2L9.876,8.859C9.132,8.301,8.228,8,7.298,8h0C4.924,8,3,9.924,3,12.298z"></path><path fill="#fbc02d" d="M45,12.298V16.2l-10,7.5V11.2l3.124-2.341C38.868,8.301,39.772,8,40.702,8h0 C43.076,8,45,9.924,45,12.298z"></path>
+</i>
   </span>
+</span>
 <script>
 
 var currentURL = window.location.href;
 var shareButton = document.querySelector(".fb-share-button");
 shareButton.setAttribute("data-href", currentURL);
 
-setTimeout(function(){
+setInterval(function(){
     var shareButton = document.getElementById("shareButton");
-    shareButton.innerHTML = ' <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(currentURL) + '&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore"><i class="fa-brands fa-facebook"></i></a>';
-  }, 100); // Change the text after 3 seconds (3000 milliseconds)
+    shareButton.innerHTML = ' <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(currentURL) + '&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore"><i id="face" class="fa-brands fa-facebook"></i></a>';
+}, 100);
+
+ // Change the text after a brief moment
+  setTimeout(function(){
+    var whatsapp = document.getElementById("whatsapp");
+    whatsapp.innerHTML = '<a target="_blank" href="whatsapp://send?text=Check%20out%20this%20link:' + currentURL + '" class="whatsapp-share-button"><i id="what" class="fab fa-whatsapp"></i></a>';
+  }, 100); 
+
+var tweetButton = document.getElementById("twitter-share-button");
+tweetButton.setAttribute("data-url", currentURL);
+tweetButton.addEventListener("click", function() {
+  var tweetText = this.getAttribute("data-text");
+  var tweetURL = this.getAttribute("data-url");
+  var twitterURL = "https://twitter.com/share?text=" + encodeURIComponent(tweetText) + "&url=" + encodeURIComponent(tweetURL);
+  window.open(twitterURL, "_blank");
+});
+
+var currentURL = window.location.href;
+var telegramButton = document.getElementById("telegram-share-button");
+telegramButton.setAttribute("data-url", currentURL);
+telegramButton.addEventListener("click", function() {
+  var text = this.getAttribute("data-text");
+  var url = this.getAttribute("data-url");
+  var telegramURL = "https://t.me/share/url?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(url);
+  window.open(telegramURL, "_blank");
+});
+var messageButton = document.getElementById("message-share-button");
+messageButton.setAttribute("data-url", currentURL);
+messageButton.addEventListener("click", function() {
+  var text = this.getAttribute("data-text");
+  var url = this.getAttribute("data-url");
+  var message = text + " " + url;
+  window.location.href = "sms:?body=" + encodeURIComponent(message);
+});
 
 </script>
 </body>
