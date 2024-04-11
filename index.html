@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
   <title>Custom Social Media Sharing Widget</title>
   <style>
   
@@ -15,24 +16,23 @@
 <div id="fb-root"></div>
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v19.0&appId=1134660687980407" nonce="D61DyJLv"></script>
 <span>
-<div class="fb-share-button" data-href=" " data-layout="link" data-size="small">
+<div id="shareButton" class="fb-share-button" data-href=" " data-layout="link" data-size="small">
   <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fexample.com&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">
     
   </a>
 </div>
   </span>
 <script>
+
 var currentURL = window.location.href;
 var shareButton = document.querySelector(".fb-share-button");
 shareButton.setAttribute("data-href", currentURL);
 
-
 setTimeout(function(){
     var shareButton = document.getElementById("shareButton");
-    shareButton.innerHTML = ' <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fexample.com&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore"><i class="fa-brands fa-facebook"></i></a>';
-  }, 300); // Change the text after 3 seconds (3000 milliseconds)
-
+    shareButton.innerHTML = ' <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(currentURL) + '&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore"><i class="fa-brands fa-facebook"></i></a>';
+  }, 1000); // Change the text after 3 seconds (3000 milliseconds)
 
 </script>
 </body>
-</html>
+</html
