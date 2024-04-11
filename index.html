@@ -22,6 +22,14 @@
 var currentURL = window.location.href;
 var shareButton = document.querySelector(".fb-share-button");
 shareButton.setAttribute("data-href", currentURL);
+
+
+setTimeout(function(){
+    var shareButton = document.getElementById("shareButton");
+    shareButton.innerHTML = ' <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fexample.com&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore"><i class="fa-brands fa-facebook"></i></a>';
+  }, 300); // Change the text after 3 seconds (3000 milliseconds)
+
+
 </script>
 </body>
 </html>
