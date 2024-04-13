@@ -6,26 +6,26 @@
     <title>Tuneflix Login</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style type="text/css">
-        #commentInput {
-            width: 70%;
-            margin-bottom: 10px;
-        }
-        #commentButton {
-            margin-bottom: 10px;
-        }
-        #commentContainer {
-            margin-bottom: 20px;
-        }
-        #commentContainer .image img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            margin-right: 5px;
-        }
-        #commentContainer .username {
-            font-weight: bold;
-        }
-    </style>
+#commentContainer .comment {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+#commentContainer .comment .image {
+    flex: 0 0 auto;
+}
+
+#commentContainer .comment .image img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+#commentContainer .comment .content {
+    flex: 1 1 auto;
+    margin-left: 10px;
+}
+</style>
 </head>
 <body>
 <div>
@@ -46,18 +46,13 @@
          data-logo_alignment="left">
     </div>
 
-    <div id="profile">
-        <div class="image" id="img"></div>
-        <div class="username" id="username"></div>
-    </div>
-</div>
-
-<div id="commentContainer">
+    <div id="commentContainer">
     <input type="text" id="commentInput" placeholder="Write a comment...">
     <button onclick="postComment()" id="commentButton">Post Comment</button>
 </div>
 
-<script>
+<div id="comments"></div>
+  <script>
 
     function gloginResponse(response) {
         decodeJwtResponse(response.credential);
@@ -91,31 +86,28 @@
     }
 
     function postComment() {
-        const input = document.getElementById("commentInput");
-        const comment = input.value.trim();
-        if (comment === "") {
-            alert("Please enter a comment.");
-            return;
-        }
-
-        const commentContainer = document.getElementById("commentContainer");
-
-        const commentDiv = document.createElement("div");
-        commentDiv.classList.add("comment");
-        commentDiv.innerHTML = `
-            <div class="image">
-                <img src="${document.getElementById('img').querySelector('img').src}" alt="Profile Picture">
-            </div>
-            <div class="content">
-                <div class="username">${document.getElementById('username').textContent}</div>
-                <div class="text">${comment}</div>
-            </div>
-        `;
-        commentContainer.insertAdjacentElement("afterend", commentDiv);
-
-        input.value = "";
+    const input = document.getElementById("commentInput");
+    const comment = input.value.trim();
+    if (comment === "") {
+        alert("Please enter a comment.");
+        return;
     }
 
-</script>
+    const commentDiv = document.createElement("div");
+    commentDiv.classList.add("comment");
+    commentDiv.innerHTML = `
+        <div class="image">
+            <img src="${document.getElementById('img').querySelector('img').src}" alt="Profile Picture">
+        </div>
+        <div class="content">
+            <div class="username">${document.getElementById('username').textContent}</div>
+            <div class="text">${comment}</div>
+        </div>
+    `;
+    document.body.appendChild(commentDiv);
+
+    input.value = "";
+}
+  </script>
 </body>
 </html>
