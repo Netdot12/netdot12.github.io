@@ -4,31 +4,35 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
     <meta name="Cross-Origin-Opener-Policy" content="same-origin-allow-popups">
     <title>Tuneflix Login</title>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <style type="text/css">
-#commentContainer .comment {
-    display: flex;
+    <link rel="stylesheet" type="text/css" href=".css">
+  <style>
+  #commentInput {
+    width: 70%;
     margin-bottom: 10px;
 }
 
-#commentContainer .comment .image {
-    flex: 0 0 auto;
+#commentButton {
+    margin-bottom: 10px;
 }
 
-#commentContainer .comment .image img {
+#commentContainer {
+    margin-bottom: 20px;
+}
+
+#commentContainer .image img {
     width: 30px;
     height: 30px;
     border-radius: 50%;
+    margin-right: 5px;
 }
 
-#commentContainer .comment .content {
-    flex: 1 1 auto;
-    margin-left: 10px;
+#commentContainer .username {
+    font-weight: bold;
 }
-</style>
+  </style>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
-<div>
     <div id="g_id_onload"
          data-client_id="1077614564692-et69ov65f2276o3l65mhbgfv9q6uni6v"
          data-context="signin"
@@ -46,52 +50,56 @@
          data-logo_alignment="left">
     </div>
 
+    <div id="profile">
+        <div class="image" id="img"></div>
+        <div class="username" id="username"></div>
+    </div>
+
     <div id="commentContainer">
-    <input type="text" id="commentInput" placeholder="Write a comment...">
-    <button onclick="postComment()" id="commentButton">Post Comment</button>
-</div>
+        <input type="text" id="commentInput" placeholder="Write a comment...">
+        <button onclick="postComment()" id="commentButton">Post Comment</button>
+    </div>
 
-<div id="comments"></div>
-  <script>
+    <script>
+  function gloginResponse(response) {
+    decodeJwtResponse(response.credential);
+}
 
-    function gloginResponse(response) {
-        decodeJwtResponse(response.credential);
-    }
+function decodeJwtResponse(data){
+    //console.log(parseJwt(data))
+    signIn(parseJwt(data))
+}
 
-    function decodeJwtResponse(data){
-        //console.log(parseJwt(data))
-        signIn(parseJwt(data))
-    }
+function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
 
-    function parseJwt (token) {
-        var base64Url = token.split('.')[1];
-        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
+    return JSON.parse(jsonPayload);
+}
 
-        return JSON.parse(jsonPayload);
-    }
+function signIn(data){
+    let img = document.getElementById('img');
+    let username = document.getElementById('username');
 
-    function signIn(data){
+    img.innerHTML = "<img src=\'" + data.picture + "\'>";
+    username.innerHTML = data.name;
 
-        let img=document.getElementById('img');
-        let username=document.getElementById('username');
+    let loginbtn = document.getElementsByClassName('g_id_signin')[0];
+    loginbtn.style.display = 'none';
+}
 
-        img.innerHTML="<img src=\'" + data.picture + "\'>";
-        username.innerHTML=data.name;
-
-        let loginbtn=document.getElementsByClassName('g_id_signin')[0];
-        loginbtn.style.display='none';
-    }
-
-    function postComment() {
+function postComment() {
     const input = document.getElementById("commentInput");
     const comment = input.value.trim();
     if (comment === "") {
         alert("Please enter a comment.");
         return;
     }
+
+    const commentContainer = document.getElementById("commentContainer");
 
     const commentDiv = document.createElement("div");
     commentDiv.classList.add("comment");
@@ -104,10 +112,11 @@
             <div class="text">${comment}</div>
         </div>
     `;
-    document.body.appendChild(commentDiv);
+    commentContainer.insertAdjacentElement("afterend", commentDiv);
 
     input.value = "";
 }
+  
   </script>
 </body>
 </html>
