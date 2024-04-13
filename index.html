@@ -4,7 +4,7 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
     <meta name="Cross-Origin-Opener-Policy" content="same-origin-allow-popups">
     <title>Tuneflix Login</title>
-    <link rel="stylesheet" type="text/css" href=".css">
+    <link rel="stylesheet" type="text/css" href="css">
   <style>
   #commentInput {
     width: 70%;
@@ -19,18 +19,24 @@
     margin-bottom: 20px;
 }
 
-#commentContainer .image img {
+#profile {
+    display: flex;
+    align-items: center;
+}
+
+.image img {
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    margin-right: 5px;
+    margin-right: 10px;
 }
 
-#commentContainer .username {
-    font-weight: bold;
+.content {
+    flex: 1;
+    text-align: left;
 }
   </style>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
     <div id="g_id_onload"
@@ -52,7 +58,7 @@
 
     <div id="profile">
         <div class="image" id="img"></div>
-        <div class="username" id="username"></div>
+        <div class="content" id="commentContent"></div>
     </div>
 
     <div id="commentContainer">
