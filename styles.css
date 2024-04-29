@@ -1,0 +1,610 @@
+.try{
+position: fixed;
+bottom: 10px;
+}
+
+i {
+    color: white;
+}
+ .image img{
+     height: 100px; /* Maintain aspect ratio */
+     width:100px;
+     border: 2px solid #333; /* Add a border */
+     border-radius:10px;
+     margin: 7px; /* Add margin for spacing */
+
+ }
+
+    .container {
+      text-align: center;
+    }
+  #playlist .song-title{
+    color: white;
+    white-space: nowrap;
+    margin-left: 5px;
+    text-align: center;
+    font-size:16px;
+  }
+#playlist .artist-name{
+  white-space: nowrap;
+  margin-left: 5px;
+}
+ 
+
+    #playlist {
+      padding: 10px;
+      overflow-y: hidden;
+      overflow-x: auto;
+      display: flex;
+    }
+
+
+    .controls {
+      z-index: 2;
+      background-color: black;
+      width:100%;
+      height:100px;
+      position:fixed;
+      bottom:-20px;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+
+    .left-controls {
+      max-width: 200px;
+      position: fixed;
+      left: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    .left-controls img {
+      border-radius: 10px;
+      max-width: 70px;
+      margin-right: 10px;
+      height: 50px;
+    }
+
+    .left-controls .text-info {
+      width:400px;
+      text-align: left;
+    }
+
+    .song-title {
+      text-align:left;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .artist-name {
+      text-align:center;
+      font-size: 16px;
+      color: #888;
+    }
+
+ .right-controls {
+      position: fixed;
+   bottom: 20px;
+      right:10px;
+      color:white;
+      display: flex;
+   
+    }
+
+    .right-controls button {
+      margin: 5px;
+      background-color: transparent; 
+      border: none;
+      font-size: 19px;
+    }
+
+    .right-controls button:focus {
+      outline: none;
+    }
+
+#songTitle{
+  max-width: 1px;
+  font-size: 14px;
+}
+#artistName{
+  font-size: 10px;
+}
+
+body {
+  
+      font-family: Arial, sans-serif;
+      background-color:black;
+      margin-bottom: 90px;
+      color:white;
+      padding: 0;
+      text-align:center;
+    }
+
+/* Styles for #me */
+    #me {
+      background-color: #3498db;
+      color: #fff;
+      text-align: center;
+    }
+
+    /* Other styles... */
+    .container {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+  
+
+img {
+  width:90%;
+  
+}
+
+h1{ 
+  
+      text-align: center;
+    }
+    
+    p {
+        margin: 10px;
+        font-size: 14px;
+        line-height: 1.5;
+        text-align: center;
+        color:white;
+       }
+    
+    .nav {
+  color:white;  
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+}
+
+#icon {
+    margin-left:10px;
+   font-size:30px;
+   justify-self: start;
+}
+
+h1 {
+  color:white; 
+  text-align: center;
+}
+
+#search {
+    color:white;
+    margin-right:10px;
+   font-size:25px;
+  justify-self: end;
+}
+
+    
+    #left {
+    margin:20px;
+    text-align:left;
+    font-size:20px; 
+   justify-self: start;
+}
+    
+    
+    .Album{
+         font-size:20px;
+     }
+    
+    
+    .image span{
+        color:#ccc;
+        font-size:10px;
+    }
+    
+         .flow {
+  margin:10px;           
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+}
+
+.left {
+    margin-top:30px;
+    text-align:left;
+    font-size:20px; 
+   justify-self: start;
+}
+    
+    .read-more {
+      color: blue;
+    }
+
+    
+
+#next{
+    position:absolute;
+    right:30px;
+    font-size:20px;
+    justify-self: end;
+    color:white;
+    transform: scaleX(2);
+}
+    
+     .songs img {
+     transition: background-color 1.3s ease-in-out;  width: 100px; /* Adjust the width as needed */
+     height: 100px; /* Maintain aspect ratio */
+     width:100px;
+     border: 2px solid #333; /* Add a border */
+     border-radius:10px;
+     margin: 7px; /* Add margin for spacing */
+}
+  .songs img:hover{
+      
+      transform: scale(1.1);
+      cursor: default;
+  }
+
+
+.image {
+  padding: 10px;
+  text-decoration:none;
+  display: block;
+  text-align: center;
+  margin-right: 10px; /* Adjust the margin as needed */
+}
+
+.text {
+    white-space: pre-line;
+    color:white;
+  font-size:16px;
+  display:block;
+  /* Adjust the margin as needed */
+}
+  
+ .text span {
+   font-size: 10px;
+ line-height: 0;
+ }
+
+
+.song{
+  padding-top:20px;   
+  height: 180px;
+  background-image: url('https://i.scdn.co/image/ab6761610000e5ebbf753c009fd9c2d53351dd3c'); /* Replace 'path/to/your/image.jpg' with the actual path to your image file */
+  background-size: cover; /* Adjusts the size of the background image to cover the entire viewport */
+  background-repeat: no-repeat; /* Ensures the background image is not repeated */
+  background-size: 100% 100%; 
+}
+    
+.song {
+      
+      overflow-y:hidden;
+    overflow-x: auto;
+  display: flex;
+}
+
+.song img {
+     transition: background-color 1.3s ease-in-out;  width: 100px; /* Adjust the width as needed */
+     height: 100px; /* Maintain aspect ratio */
+     width:100px;
+     border: 2px solid #333; /* Add a border */
+     border-radius:10px;
+     margin: 7px; /* Add margin for spacing */
+}
+  .song img:hover{
+      transform: scale(1.0);
+      background-color:white; 
+  }
+
+
+    
+  .related {
+      
+      overflow-y:hidden;
+    overflow-x: auto;
+  display: flex;
+}
+
+  
+
+  .Cont{
+    white-space: nowrap;
+text-decoration:none;
+  display: block;
+  text-align: center;
+  margin-top:30px;
+  margin-left:40px;      
+  }
+
+#hide{
+    margin-right:40px;
+}
+
+.Head {
+    
+    color:white;
+  font-size:16px;
+  display:block;
+  margin-top: 3px; /* Adjust the margin as needed */
+}
+  
+  
+ .related img {
+     transition: background-color 1.3s ease-in-out;  width: 100px; /* Adjust the width as needed */
+     height: 100px; /* Maintain aspect ratio */
+     width:100px;
+     border: 2px solid #333; /* Add a border */
+     border-radius:10px;
+     margin: 7px; /* Add margin for spacing */
+}
+  .related img:hover{
+      transform: scale(1.0);
+      background-color:white; 
+  }
+
+    
+   .Cont .artist{ 
+       height:50px;
+       width:50px;
+       position:relative;
+       left:40px;
+       border-radius:30px;
+}
+    
+            .navbar {
+            background-color: none;
+            position: relative;
+            height: 100vh;
+            overflow: auto;
+        }
+
+        /* Navbar links */
+        .navbar a {
+            background-color: none;
+            text-align: left;
+            padding: 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 20px;
+            display: block;
+        }
+
+        /* Navbar links on mouse-over */
+        .navbar a:hover {}
+
+        /* Current/active navbar link */
+        .active {
+            position: relative;
+            right: 20px;
+            width: 100%;
+            background-color: #333;
+        }
+
+        /* Style for icon images */
+        .navbar i {
+            display: block;
+            text-align: center;
+            margin-left:10px;
+            margin-bottom: 5px;
+            font-size: 24px;
+        }
+
+    
+    
+    
+
+
+
+
+
+a {
+    text-decoration:none;
+    
+}
+
+
+
+
+
+
+
+
+    img {
+        filter: brightness(1.0) contrast(1.2) saturate(1.2); /* Adjusts brightness, contrast, and saturation */
+        display: block;
+        margin: 0 auto; /* Center the image within its container */
+        border-radius: 8px; /* Optional: Add rounded corners */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle box shadow */
+    }
+
+
+
+
+    audio {
+      colour:#151B54;
+      width: 100%;
+      max-width: 400px;
+      display: block;
+      margin: 0 auto;
+    }
+#big {
+    max-width: 100%;
+    height:auto;
+}
+
+.highlight {
+    font-size:25px;
+    color: #ffcc29;
+}
+
+
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin;-10px;
+    background-color: #ffcc29;
+    color: #333;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #e0b522;
+   }
+
+
+  pre {
+          font-family: 'Poppins', sans-serif;
+      margin: 0px;
+      font-size: 14px;
+      line-height: 1.5;
+      text-align: center;
+      color:white;
+    }
+
+   
+
+    audio {
+      colour:#151B54;
+      width: 100%;
+      max-width: 90%;
+      display: block;
+    }
+
+    .download-button {
+      display: block;
+      height: 10px;
+      width: 200px;
+      margin: 10px ;
+      padding: 10px;
+      background-color:#D1D0CE;
+      color:#151B54;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+
+    .download-button:hover {
+      background-color: #D1D0CE;
+    }
+  #subscribe-button{
+       display: inline-block;
+    padding: 10px 20px;
+    margin-top: 20px;
+    background-color: #ffcc29;
+    color: #333;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    background-color:#D1D0CE;
+    
+  }
+
+#subscribe-message {
+  
+  z-index:2;
+  display: none;
+  background-color:red;
+  color: white;
+  padding: 10px;
+  position: fixed;
+  border-radius: 50px;
+  bottom:300px;
+  left: 30px;
+  right: 30px;
+  text-align: center;
+}
+
+ul {
+    display:flex;
+ }
+
+.li{
+    position:relative;
+    margin-left:40px;
+}
+
+
+    
+
+
+.top{
+      background-color: /* Add your desired background color */;
+      padding: 0;
+      margin:20px;
+      width: 400px;
+      position: relative;
+      right: 30px;
+      text-align: left;
+    }
+
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      display: flex;
+      margin-left: 0px;
+    }
+
+   li a {
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      border: solid 1px;
+      border-radius: 30px;
+      padding: 10px;
+      cursor: pointer; /* Add this line to make the cursor change on hover */
+    }
+
+
+
+
+   .background-section {
+      background-image: url(' '); /* Replace 'your-image.jpg' with the path to your image */
+      background-size: cover;
+      background-position: center;
+      height: 300px; /* Adjust the height as needed */
+      position: relative;
+    }
+
+    /* Add text over the background image */
+    .text-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white; /* Adjust text color as needed */
+      font-size: 24px; /* Adjust font size as needed */
+    }
+
+
+      nav  a {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 0 10px;
+            text-decoration: none;
+            color: #fff;
+            background-color: #3498db;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+nav {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+.artist, #show{
+  font-size: 20px;
+  text-align: left;
+  margin-left:60px;
+  margin-top:-10px;
+}
+ #more{
+   font-size:3em ;
+ }
