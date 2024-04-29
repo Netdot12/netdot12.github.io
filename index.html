@@ -3,15 +3,340 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Audio Source</title>
+    <title>Dynamic Song Player</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+ @keyframes pulse {
+            0% {
+               
+                box-shadow: 0 0 0 0px rgba(76, 175, 80, 0.4); /* Start with a faint shadow */
+            }
+            50% {
+                border:dotted 1px white;
+                box-shadow: 0 0 70px 0px rgba(76, 175, 80, 0.4); /* Pulsing outward */
+            }
+            100% {
+                box-shadow: 0 0 0 0px rgba(76, 175, 80, 0.4); /* Back to faint shadow */
+            }
+        }
+
+        /* Style for the currently playing song */
+        .current-song {
+            border:solid 1px white;
+            animation: pulse 1s infinite; /* Apply the pulsing animation */
+            border-radius: 10px; /* Round corners for a smoother look */
+        }
+  
+    </style>
 </head>
 <body>
-    <h1>Dynamic Audio Source Example</h1>
 
-    <!-- HTML audio element with src attribute set to audio.php -->
-    <audio controls>
-        <source src="audio.php?song=greedy" type="audio/mp3">
-        Your browser does not support the audio element.
-    </audio>
+<div class="controls">
+    <div class="left-controls">
+        <img src="" alt="" id="songImage">
+        <div class="text-info">
+            <span class="song-title" id="songTitle"></span><br>
+            <span class="artist-name" id="artistName"></span>
+        </div>
+    </div>
+    <div class="right-controls">
+        <button id="backward"><i class="fa-solid fa-backward-step"></i></button>
+        <button id="playpause"><i class="fas fa-play"></i></button>
+        <button id="forward"><i class="fa-solid fa-forward-step"></i></button>
+    </div>
+</div>
+
+<div id="playlist">
+    <a href="" class="image" data-source="../music/titanium.mp3">
+        <img src="../David Guetta/titanium.jpg" alt="Titanium">
+        <div class="text-info">
+            <span class="song-title">Titanium</span><br>
+            <span class="artist-name">David Guetta Ft Sia</span>
+        </div>
+    </a>
+    <a href="" class="image" data-source="../music/wake me up.mp3">
+        <img src="../Avicii/wake me up.jpg" alt="Wake Me Up">
+        <div class="text-info">
+            <span class="song-title">Wake Me Up</span><br>
+            <span class="artist-name">Avicii</span>
+        </div>
+    </a>
+    <a href="" class="image" data-source="../music/clarity.mp3">
+        <img src="../Zedd/clarity.jpg" alt="Clarity">
+        <div class="text-info">
+            <span class="song-title">Clarity</span><br>
+            <span class="artist-name">Zedd Ft. Foxes</span>
+        </div>
+    </a>
+  
+    <a href="" class="image" data-source="../music/don't let me down.mp3">
+        <img src="../The Chainsmokers/don't let me down.jpg" alt="Don't Let Me Down">
+        <div class="text-info">
+            <span class="song-title">Don’t let me down</span><br>
+            <span class="artist-name">The Chainsmokers Ft. Daya</span>
+        </div>
+    </a>
+      <a href="" class="image" data-source="../music/animals.mp3">
+        <img src="../Martin Garrix/animals.jpg" alt="animals by martin garrix">
+        <div class="text-info">
+            <span class="song-title">Animals</span><br>
+            <span class="artist-name">Martin Garrix</span>
+        </div>
+    </a>
+  <a href="" class="image" data-source="../music/alone m.mp3">
+    <img src="../Marshmello/alone.jpg" alt="Alone by Marshmello">
+    <div class="text-info">
+        <span class="song-title">Alone </span><br>
+        <span class="artist-name">Marshmellow</span>
+    </div>
+</a>
+<a href="" class="image" data-source="../music/heroes.mp3">
+    <img src="../Alesso/heroes.jpg" alt="Heroes we could be">
+    <div class="text-info">
+        <span class="song-title">Heroes(we<br>could be)</span><br>
+        <span class="artist-name">Alesso ft. Tove Love</span>
+    </div>
+</a>
+<a href="" class="image" data-source="../music/stay z.mp3">
+    <img src="../Zedd/stay.jpg" alt=" ">
+    <div class="text-info">
+        <span class="song-title">Stay</span><br>
+        <span class="artist-name">Zedd and Alessia Cara</span>
+    </div>
+</a>
+<a href="" class="image" data-source=" ">
+    <img src=" " alt=" ">
+    <div class="text-info">
+        <span class="song-title">  </span><br>
+        <span class="artist-name">   </span>
+    </div>
+</a>
+<a href="" class="image" data-source=" ">
+    <img src=" " alt=" ">
+    <div class="text-info">
+        <span class="song-title">  </span><br>
+        <span class="artist-name">   </span>
+    </div>
+</a>
+<a href="" class="image" data-source=" ">
+    <img src=" " alt=" ">
+    <div class="text-info">
+        <span class="song-title">  </span><br>
+        <span class="artist-name">   </span>
+    </div>
+</a>
+<a href="" class="image" data-source=" ">
+    <img src=" " alt=" ">
+    <div class="text-info">
+        <span class="song-title">  </span><br>
+        <span class="artist-name">   </span>
+    </div>
+</a>
+<a href="" class="image" data-source=" ">
+    <img src=" " alt=" ">
+    <div class="text-info">
+        <span class="song-title">  </span><br>
+        <span class="artist-name">   </span>
+    </div>
+</a>
+<a href="" class="image" data-source=" ">
+    <img src=" " alt=" ">
+    <div class="text-info">
+        <span class="song-title">  </span><br>
+        <span class="artist-name">   </span>
+    </div>
+</a>
+<a href="" class="image" data-source=" ">
+    <img src=" " alt=" ">
+    <div class="text-info">
+        <span class="song-title">  </span><br>
+        <span class="artist-name">   </span>
+    </div>
+</a>
+<a href="" class="image" data-source=" ">
+    <img src=" " alt=" ">
+    <div class="text-info">
+        <span class="song-title">  </span><br>
+        <span class="artist-name">   </span>
+    </div>
+</a>
+<a href="" class="image" data-source=" ">
+    <img src=" " alt=" ">
+    <div class="text-info">
+        <span class="song-title">  </span><br>
+        <span class="artist-name">   </span>
+    </div>
+</a>
+<a href="" class="image" data-source=" ">
+    <img src=" " alt=" ">
+    <div class="text-info">
+        <span class="song-title">  </span><br>
+        <span class="artist-name">   </span>
+    </div>
+</a>
+<a href="" class="image" data-source=" ">
+    <img src=" " alt=" ">
+    <div class="text-info">
+        <span class="song-title">  </span><br>
+        <span class="artist-name">   </span>
+    </div>
+</a>
+<a href="" class="image" data-source=" ">
+    <img src=" " alt=" ">
+    <div class="text-info">
+        <span class="song-title">  </span><br>
+        <span class="artist-name">   </span>
+    </div>
+</a>
+<a href="" class="image" data-source=" ">
+    <img src=" " alt=" ">
+    <div class="text-info">
+        <span class="song-title">  </span><br>
+        <span class="artist-name">   </span>
+    </div>
+</a>
+<a href="" class="image" data-source=" ">
+    <img src=" " alt=" ">
+    <div class="text-info">
+        <span class="song-title">  </span><br>
+        <span class="artist-name">   </span>
+    </div>
+</a>
+<a href="" class="image" data-source=" ">
+    <img src=" " alt=" ">
+    <div class="text-info">
+        <span class="song-title">  </span><br>
+        <span class="artist-name">   </span>
+    </div>
+</a>
+
+
+
+</div>
+
+<audio id="audio" controls>
+    Your browser does not support the audio element.
+</audio>
+
+<script>
+const audio = document.getElementById("audio");
+const playpauseBtn = document.getElementById("playpause");
+const backwardBtn = document.getElementById("backward");
+const forwardBtn = document.getElementById("forward");
+
+const playlist = [
+    { name: "Titanium", source: "greedy.mp3", image: "../David Guetta/titanium.jpg", title: "Titanium", artist: "David Guetta Ft Sia" },
+    { name: "Wake Me Up", source: "../music/wake me up.mp3", image: "../Avicii/Wake me up.jpg", title: "Wake Me Up", artist: "Avicii" },
+    { name: "Clarity", source: "../music/clarity.mp3", image: "../Zedd/clarity.jpg", title: "Clarity", artist: "Zedd Ft. Foxes" },
+    { name: "Don’t let me down", source: "../music/don't let me down.mp3", image: "../The Chainsmokers/don't let me down.jpg", title: "Don’t Let Me Down", artist: "The Chainsmokers Ft. Daya" },
+    { name: "Animals", source: "../music/animals.mp3", image: "../Martin Garrix/animals.jpg", title: "Animals", artist: "Martin Garrix" },
+    { name: "Alone", source: "../music/alone m.mp3", image: "../marshmellow/alone.jpg", title: "Alone", artist: "Marshmellow" },
+    { name: "  ", source: "  ", image: "  ", title: "   ", artist: "  " },
+    { name: "  ", source: "  ", image: "  ", title: "   ", artist: "  " },
+    { name: "  ", source: "  ", image: "  ", title: "   ", artist: "  " },
+    { name: "  ", source: "  ", image: "  ", title: "   ", artist: "  " },
+    { name: "  ", source: "  ", image: "  ", title: "   ", artist: "  " },
+    { name: "  ", source: "  ", image: "  ", title: "   ", artist: "  " },
+    { name: "  ", source: "  ", image: "  ", title: "   ", artist: "  " },
+    { name: "  ", source: "  ", image: "  ", title: "   ", artist: "  " },
+    { name: "  ", source: "  ", image: "  ", title: "   ", artist: "  " },
+    { name: "  ", source: "  ", image: "  ", title: "   ", artist: "  " },
+    { name: "  ", source: "  ", image: "  ", title: "   ", artist: "  " },
+    { name: "  ", source: "  ", image: "  ", title: "   ", artist: "  " },
+    { name: "  ", source: "  ", image: "  ", title: "   ", artist: "  " },
+    { name: "  ", source: "  ", image: "  ", title: "   ", artist: "  " }
+
+  ];
+
+let currentSongIndex = 0; // This will be updated to reflect the current playing song
+
+function updateCurrentSongClass(currentSource) {
+    const playlistItems = document.querySelectorAll("#playlist .image");
+    playlistItems.forEach(item => {
+        item.classList.remove("current-song");
+    });
+
+    const currentItem = Array.from(playlistItems).find(
+        item => item.getAttribute("data-source") === currentSource
+    );
+
+    if (currentItem) {
+        currentItem.classList.add("current-song");
+    }
+}
+
+function playSong(source) {
+    const storedPlaybackTime = retrievePlaybackTime();
+    audio.currentTime = storedPlaybackTime; 
+    const song = playlist.find(item => item.source === source);
+    if (song) {
+        audio.src = song.source;
+        audio.play();
+        playpauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        document.getElementById("songImage").src = song.image;
+        document.getElementById("songTitle").textContent = song.title;
+        document.getElementById("artistName").textContent = song.artist;
+
+        // Update the current song index based on the source
+        currentSongIndex = playlist.findIndex(item => item.source === source);
+        
+        updateCurrentSongClass(source); 
+        updateCurrentSongSource(source); 
+    }
+}
+
+backwardBtn.addEventListener("click", function() {
+    currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
+    playSong(playlist[currentSongIndex].source);
+});
+
+forwardBtn.addEventListener("click", function() {
+    currentSongIndex = (currentSongIndex + 1) % playlist.length;
+    playSong(playlist[currentSongIndex].source);
+});
+
+const playlistItems = document.querySelectorAll("#playlist .image");
+playlistItems.forEach(item => {
+    item.addEventListener("click", function(event) {
+        event.preventDefault(); 
+        const source = this.getAttribute("data-source");
+        storePlaybackTime(); 
+        playSong(source);
+    });
+});
+
+audio.addEventListener("timeupdate", storePlaybackTime);
+
+const storedSource = localStorage.getItem("currentSongSource");
+if (storedSource) {
+    const storedSong = playlist.find(item => item.source === storedSource);
+    if (storedSong) {
+        playSong(storedSource);
+    } else {
+        const randomIndex = Math.floor(Math.random() * playlist.length);
+        const randomSource = playlist[randomIndex].source;
+        storePlaybackTime(0); 
+        playSong(randomSource);
+    }
+} else {
+    // If no stored source, play the first song and set the correct currentSongIndex
+    playSong(playlist[0].source);
+}
+
+function updateCurrentSongSource(source) {
+    localStorage.setItem("currentSongSource", source);
+}
+
+function storePlaybackTime() {
+    localStorage.setItem("playbackTime", audio.currentTime);
+}
+
+function retrievePlaybackTime() {
+    const storedPlaybackTime = localStorage.getItem("playbackTime");
+    return storedPlaybackTime ? parseFloat(storedPlaybackTime) : 0;
+}
+  </script>
 </body>
 </html>
