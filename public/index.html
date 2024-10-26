@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Notification</title>
+</head>
+<body>
+    <h1>Send Firebase Notification</h1>
+    <a href="tru.html">Sf</a>
+    <form id="notificationForm">
+        <label for="title">Notification Title:</label>
+        <input type="text" id="title" name="title" required><br><br>
+
+        <label for="body">Notification Body:</label>
+        <input type="text" id="body" name="body" required><br><br>
+
+        <input type="hidden" id="token" name="token"><!-- Hidden field for Firebase token -->
+
+        <button type="submit">Send Notification</button>
+    </form>
+
+    <script type="module">
+        // Firebase SDKs and logic to get the token
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+        import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-messaging.js";
+
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyBTHkdgYk91fKYFDIxTSzurdvf7SBaEYHQ",
+            authDomain: "tuneflix-ea9b8.firebaseapp.com",
+            projectId: "tuneflix-ea9b8",
+            storageBucket: "tuneflix-ea9b8.appspot.com",
+            messagingSenderId: "874689628328",
+            appId: "1:874689628328:web:6d1d7c1e49135d9ce75a9d",
+            measurementId: "G-6KZMFGDRBS"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const messaging = getMessaging(app);
+
+        // Get Firebase token and set it to the hidden input field
+        navigator.serviceWorker.register("sw.js").then(registration => {
+            getToken(messaging, {
+                serviceWorkerRegistration: registration,
+                vapidKey: 'BEEK__iLM1F8o_nA4uonVgIYZBL4Q3ypBevE_AvBxny47cH8Ow_iRlqrYutUUWaFb_0jK0tTE05CR__9DEO1Hqk'
+            }).then((currentToken) => {
+                if (currentToken) {
+                    document.getElementById('token').value = currentToken; // Set the token to hidden input
+                } else {
+                    console.log('No registration token available. Request permission to generate one.');
+                }
+            }).catch((err) => {
+                console.log('An error occurred while retrieving token. ', err);
+            });
+        });
+
+        // Handle form submission
+        document.getElementById('notificationForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent form from submitting the traditional way
+
+            const title = document.getElementById('title').value;
+            const body = document.getElementById('body').value;
+            const token = document.getElementById('token').value;
+
+            // Send the data to the server
+            fetch('/send-notification', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ title, body, token })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Notification sent successfully!');
+                } else {
+                    alert('Error sending notification.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
