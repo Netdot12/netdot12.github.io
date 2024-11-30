@@ -7,15 +7,18 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
         function handleCredentialResponse(response) {
-    console.log("Credential Response:", response);
-    if (response.credential) {
-        const data = parseJwt(response.credential);
-        document.querySelector('p').innerHTML = data;
-        console.log('Decoded JWT:', data);
-    } else {
-        console.error("Error: No credential received.");
-    }
-}
+            if (response.credential) {
+                const data = parseJwt(response.credential);
+                console.log('Decoded JWT:', data);
+
+                // Display name, email, and profile image
+                document.getElementById('name').innerText = `Name: ${data.name}`;
+                document.getElementById('email').innerText = `Email: ${data.email}`;
+                document.getElementById('profile-img').src = data.picture;
+            } else {
+                console.error("Error: No credential received.");
+            }
+        }
 
         function parseJwt(token) {
             const base64Url = token.split('.')[1];
@@ -26,20 +29,23 @@
             return JSON.parse(jsonPayload);
         }
 
-        // Initialize the Google One Tap prompt
         window.onload = function () {
             google.accounts.id.initialize({
                 client_id: '847644538886-h57vcktcmjhdlj553b33js8tnenlge62', // Replace with your Google client ID
                 callback: handleCredentialResponse,
-                cancel_on_tap_outside: false, // Keep it open even if the user taps outside
+                cancel_on_tap_outside: false,
             });
 
-            google.accounts.id.prompt(); // Displays the One Tap UI
+            google.accounts.id.prompt();
         };
     </script>
 </head>
 <body>
     <h1>Google One Tap Login Demo</h1>
-    <p></p>
+    <div>
+        <p id="name">Name: </p>
+        <p id="email">Email: </p>
+        <img id="profile-img" alt="Profile Image" style="max-width: 100px; border-radius: 50%;" />
+    </div>
 </body>
 </html>
