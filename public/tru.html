@@ -1,72 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User's Top Spotify Tracks</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google One Tap Sign-In</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+        function handleCredentialResponse(response) {
+    console.log("Credential Response:", response);
+    if (response.credential) {
+        const data = parseJwt(response.credential);
+        document.querySelector('p').innerHTML = data;
+        console.log('Decoded JWT:', data);
+    } else {
+        console.error("Error: No credential received.");
     }
-    .track {
-      margin-bottom: 10px;
-    }
-    .track h3 {
-      margin: 0;
-    }
-    .track audio {
-      margin-top: 5px;
-    }
-  </style>
+}
+
+        function parseJwt(token) {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(
+                atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
+            );
+            return JSON.parse(jsonPayload);
+        }
+
+        // Initialize the Google One Tap prompt
+        window.onload = function () {
+            google.accounts.id.initialize({
+                client_id: '847644538886-h57vcktcmjhdlj553b33js8tnenlge62', // Replace with your Google client ID
+                callback: handleCredentialResponse,
+                cancel_on_tap_outside: false, // Keep it open even if the user taps outside
+            });
+
+            google.accounts.id.prompt(); // Displays the One Tap UI
+        };
+    </script>
 </head>
 <body>
-
-  <h1>Your Top Spotify Tracks</h1>
-  <div id="tracks"></div>
-
-  <script>
-    // Authorization token (must be created via Spotify OAuth flow)
-    const token = 'BQBRUYT1e8wcklDXeEJRWsbHvThoIS_BBWQ7ssJr0Jvs68PojlPF38bSG1cWLh73HfnpYX452QAkHXWiUQWLy39ayUK9QJBWEmNzJ4RO-CthQg6oJYPVX7mNgjgZwWkhPIMfa46QhQ1ID1PuRs8CSFkFXrlD1ZM7mTwlB8Q2sNjRKGjYRqVBkMiwTnW7ZCp0VJqGm5U3SZpXIRa1Tta1FkMu_UrtoRlIAIgY78z0-1IyIx17Doy-azLzT8R8OhJopdB21tNf_ofa5G0ZmgKjIp-tM1ludMRN';
-
-    // Function to make API requests
-    async function fetchWebApi(endpoint, method, body = null) {
-      const res = await fetch(`https://api.spotify.com/${endpoint}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        method,
-        body: body ? JSON.stringify(body) : null,
-      });
-      return await res.json();
-    }
-
-    // Function to get user's top tracks
-    async function getTopTracks() {
-      return (await fetchWebApi('v1/me/top/tracks?time_range=long_term&limit=5', 'GET')).items;
-    }
-
-    // Function to display the tracks in HTML
-    async function displayTracks() {
-      const tracks = await getTopTracks();
-      const tracksContainer = document.getElementById('tracks');
-      
-      tracks.forEach(track => {
-        const trackElement = document.createElement('div');
-        trackElement.classList.add('track');
-
-        trackElement.innerHTML = `
-          <h3>${track.name} by ${track.artists.map(artist => artist.name).join(', ')}</h3>
-          ${track.preview_url ? `<audio controls src="${track.preview_url}"></audio>` : '<p>No preview available</p>'}
-        `;
-        tracksContainer.appendChild(trackElement);
-      });
-    }
-
-    // Call the function to display tracks
-    displayTracks();
-
-  </script>
+    <h1>Google One Tap Login Demo</h1>
+    <p></p>
 </body>
 </html>
