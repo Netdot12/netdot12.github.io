@@ -20,6 +20,22 @@ app.use(express.static(path.join(__dirname, 'comment')));
 require('dotenv').config();
 
 
+// Initialize Firebase Admin SDK
+admin.initializeApp({
+    credential: admin.credential.cert({
+  "type": "service_account",
+  "project_id": "tuneflix-ea9b8",
+  "private_key_id": "17faab0d7c9366cec36bd1fb6cff1e34c371017a",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCh2CrBM8ZxoVKS\n1Y+56w14KpvhBx3EEfJZ3vogxRjCdCaiGhBhj1xdvQUgXWb0XKQv+cD9B+Bc1BG8\nnNB+r/sjpOA5xnCyQZh2ybPSdQhYEbzYAf6aM6rs6ihhIt6o7/rWtDgOAH6HiB9A\nnEC8ZdSOLEIndW6HMoN8SkUDI3h0ttGTbgoIp2glX/PVdE4jUmDMexK+zT99D2wq\nynRDueuthnsquQXpmMPrY6YrDz1z7B83aGODMsmDWqZ7qZvCz5nNXSEz9VUm5DIB\nlGwFQf0Pa/riEUQWWxG5mRHS04DLHyPTppbhhNvJyvu4yrmzSBMx5TgGaN0kGZuh\n3B6WdoilAgMBAAECggEAFhZaP2PBgWBy1Hcw1j6t5+hovZ0rAscwO/OiTzaW2nLf\nkt/bvHTENkbFnFUi59Z80c9T9zRL+l82zHbaPW/m5kZqE3hxiOJK3GtKjz5JlTtW\nemRLSuAiQ5LxT9BicsvNf9+4hrCqk/SPz1GDxDJhf8WqgZgVLX5HU38PTA5bMhJJ\nlE5da0vbw4Ucv6w36+8mGb0CXlM7QcnJFUEW03o84zkXcOG5fPpHV94yKRCm2Gg6\nskIFiMd6TEclxYFs2qzkKrVt8PaLhfBDhzUCTX6i9IgoB8+CAGOG/VB5tYPE8Noa\nVwAVF9bOMPUcCPJ0WXPreaM9/X2/51PbY6cZUt88AQKBgQDQuVq/PWom9L2UEcRS\nyBfano3BzK9k1pKPNnldKxhWVnhdNWlvd7oJ2NDkxW1/cdmesy4Uy1o63PFCA/Fn\nNRI9CU/ZWn54/+mUdYKYn5YZCZNpBq4gjPNv2WhDvyMRAHTb3kqCt0DGGSPJoUTq\nv1LfLNfD+07xbPVezy6aWTvnlQKBgQDGgIuvugd4nvpLeig1SLUzCL5B93OtKybp\nzgPOm5PVhvhJoxLXDe1CBoH7WaTzVIgb7EddhY5HjwOqoaVcggMBagRU8oYSwA7z\n40u27pMl4OQd/m85EFhO9fWG6+s230z+pzVDkPduxSq3af+0DOiyfJ3zVd7rHLOA\nYt07I1aY0QKBgQCG1GVxihurZIeeQcffbdAy8h9CZJWcfxuXlanabH9BLoR8OYeN\ncPrlZ4Cxd3NfU00vvjFzT1VPFvBmI6Pqdpb8hKpnDpUKVs4tj6c4LkbIj64At0b+\nUe7jfr5inPLrBa93ZGYfgH9AOHcsxZd+SO8gqZgLyqhZPnhWsWE6ZZBT7QKBgESD\nQbNZZhK/7Gv4scASZFhFAEYMfqSabEfuj2nUUOY2O6RO4MXRTL6pOFvkyQYjewcI\nOmmRG1afighu2oBfb2IhkXUwcA4ws/iBzzRIjAla4eFoXEM53QED68axzvGViSGr\n3LqBYqWc7+12bIdcnURdtrayQMqtkVcSyIEM5WrBAoGADRdsx9/cqqRBGcGYAKV6\nxAxhbqdFld3bTdsF3IgsHEfDeHMKWdRdsLRF3knThA0GGmntONfhRUIGZpavJdTO\nxngoVVSrqcnwQEthPLiTDr8XwjdsEe1Wg6Gg7X/1sealbPwfwMz6rASOhO42ltU+\nnBc03S2Llbn4xOHHJmqh6cc=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-q9rni@tuneflix-ea9b8.iam.gserviceaccount.com",
+  "client_id": "100336174921047863024",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-q9rni%40tuneflix-ea9b8.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+})
+});
 
 // Route to send notification when the form is submitted
 app.post('/send-notification', (req, res) => {
