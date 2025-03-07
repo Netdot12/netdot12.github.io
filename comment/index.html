@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+  <style>
+   #replies-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            width: 80%;
+            height:100%;
+            max-width: 600px;
+            display: none;
+        }
+
+        #replies-modal .modal-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        #replies-modal .modal-body {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        #replies-modal .modal-footer {
+            text-align: right;
+        }
+
+        #replies-modal button {
+            padding: 5px 10px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #replies-modal button:hover {
+            background: #a71d2a;
+        }
+  </style>
+    <title>Comment Section with File Uploads</title>
+    <script>
+        const pagelink = window.location.href;
+        const pageUrl = pagelink.includes('#') ? pagelink.split('#')[0] : pagelink;
+
+        // Fetch user info from localStorage
+        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+        const currentUser = userInfo ? userInfo.data : null;
+
+ async function fetchComments() {
+    const response = await fetch(`http://localhost:3000/comments?pageUrl=${encodeURIComponent(pageUrl)}`);
+    const comments = await response.json();
+    currentReplies = comments; // Update currentReplies here
+    displayComments(comments);
+}
+
+async function postComment() {
+    const content = document.getElementById('comment-input').value;
+    const imageFile = document.getElementById('image-input').files[0];
+    const videoFile = document.getElementById('video-input').files[0];
+    const currentToken = localStorage.getItem('fcmToken'); // Check if token is stored
+
+    if (!currentUser) {
+        alert("Please log in to comment.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('pageUrl', pageUrl);
+    formData.append('content', content);
+    formData.append('user', currentUser.name);
+    formData.append('userId', currentUser.sub || currentUser.id);
+    formData.append('userImage', currentUser.picture.data.url || currentUser.picture);
+    formData.append('fcmtoken', currentToken);
+
+    if (imageFile) formData.append('image', imageFile);
+    if (videoFile) formData.append('video', videoFile);
+
+    await fetch('/comments', {
+        method: 'POST',
+        body: formData,
+    });
+     fetchComments();
+}
+  
+
+fetchComments();
+let commentsPerPage = 10; // Set a default value
+
+function displayComments(comments, append = false) {
+    const commentSection = document.getElementById('comment-section');
+    if (!append) {
+        commentSection.innerHTML = ''; // Clear existing comments if not appending
+    }
+
+    comments.forEach(comment => {
+        const userLiked = currentUser && comment.likes.includes(currentUser.sub || currentUser.id);
+        const isOwner = currentUser && (currentUser.sub === comment.userId || currentUser.id === comment.userId);
+        const timeAgo = formatTimeAgo(new Date(comment.createdAt));
+
+        const commentDiv = document.createElement('div');
+        commentDiv.id = `comment-${comment._id}`;
+        commentDiv.innerHTML = `
+            <div>
+                <p>
+                    <img src="${comment.userImage || 'default-avatar.png'}" alt="${comment.user}" width="60" height="60">
+                    <strong>${comment.user}</strong> - <span class="time-ago">${timeAgo}</span>
+                </p>
+                <p>${comment.content}</p>
+                ${comment.image ? `<img src="${comment.image}" alt="Comment Image" width="200">` : ''}
+                ${comment.video ? `<video src="${comment.video}" controls width="300"></video>` : ''}
+                <div>
+                    <span onclick="toggleLike('${comment._id}', ${userLiked})" style="cursor: pointer;">
+                        ${userLiked ? '❤️' : '🤍'} (${comment.likes.length})
+                    </span>
+                    ${isOwner ? `
+                        <button onclick="editComment('${comment._id}', '${comment.content}')">Edit</button>
+                        <button onclick="deleteComment('${comment._id}')">Delete</button>
+                    ` : ''}
+                </div>
+                <button onclick="replyToComment('${comment._id}', null, '${comment.user}', '${comment.userId}')">Reply</button>
+                <button id="view-replies" onclick="showReplies('${comment._id}')">View Replies</button>
+            </div>
+        `;
+        commentSection.appendChild(commentDiv);
+    });
+
+    // Add "Load More" button if comments are returned
+    const loadMoreBtn = document.getElementById('load-more');
+    if (!loadMoreBtn && comments.length === commentsPerPage) {
+        const button = document.createElement('button');
+        button.id = 'load-more';
+        button.textContent = 'Load More';
+        button.onclick = () => {
+            currentPage++; // Increment the page count
+            fetchComments();
+        };
+        commentSection.appendChild(button);
+    } else if (loadMoreBtn && comments.length < commentsPerPage) {
+        // Remove "Load More" button if no more comments to load
+        loadMoreBtn.remove();
+    }
+}
+
+function renderReplies(replies, commentId) {
+    // Sort replies by date added (most recent first)
+    const sortedReplies = replies.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    return sortedReplies.map(reply => {
+        const isOwner = currentUser && (currentUser.sub === reply.userId || currentUser.id === reply.userId);
+        const timeAgo = formatTimeAgo(new Date(reply.createdAt));
+
+        return `
+            <div id="reply-${reply._id}">
+                <p>
+                    ↳ 
+                    <img src="${reply.userImage || 'default-avatar.png'}" alt="${reply.user}" width="20" height="20">
+                    <strong>${reply.user}</strong> - <span class="time-ago">${timeAgo}</span> <br>
+                    <span style="color: blue;">@${reply.replyTo || 'unknown'}</span>
+                    ${reply.content}
+                </p>
+                <div 
+                    id="likeReply"
+                    onclick="toggleReplyLike('${commentId}', '${reply._id}', ${(reply.likes || []).includes(currentUser?.id)})" 
+                    style="cursor: pointer; color: ${(reply.likes || []).includes(currentUser?.id) ? 'blue' : 'gray'};">
+                    ❤️ ${(reply.likes || []).length} Like
+                </div>
+                ${isOwner ? `
+                    <button onclick="editReply('${commentId}', '${reply._id}', '${reply.content}')">Edit</button>
+                    <button onclick="deleteReply('${commentId}', '${reply._id}')">Delete</button>
+                ` : ''}
+                ${reply.media ? renderMedia(reply.media) : ''}
+                <div>
+                    <button onclick="replyToComment('${commentId}', '${reply._id}', '${reply.user}', '${reply.userId}' )">Reply</button>
+                </div>
+                <div style="margin-left: 20px;">
+                    ${renderReplies(reply.replies || [], commentId)}
+                </div>
+                <br>
+            </div>
+        `;
+    }).join('');
+}
+
+let currentReplies = []; // Store replies for the current comment
+
+function showReplies(commentId, highlightReplyId = null) {
+    const repliesModal = document.getElementById('replies-modal');
+    const modalBody = document.getElementById('replies-modal-body');
+
+    // Function to refresh replies
+    const refreshReplies = () => {
+        // Temporarily remove the refresh button if it exists
+        const refreshButton = document.getElementById('refresh-replies-btn');
+        if (refreshButton) {
+            refreshButton.remove();
+        }
+
+        // Clear previous content
+        modalBody.innerHTML = '';
+
+        // Find the selected comment
+        const comment = currentReplies.find(c => c._id === commentId);
+        if (comment) {
+            // Render the original comment at the top
+            const userLiked = currentUser && comment.likes.includes(currentUser.sub || currentUser.id);
+            const isOwner = currentUser && (currentUser.sub === comment.userId || currentUser.id === comment.userId);
+            const timeAgo = formatTimeAgo(new Date(comment.createdAt));
+
+            const originalCommentHtml = `
+                <div id="original-comment">
+                    <p>
+                        <img src="${comment.userImage || 'default-avatar.png'}" alt="${comment.user}" width="60" height="60">
+                        <strong>${comment.user}</strong> - <span class="time-ago">${timeAgo}</span>
+                    </p>
+                    <p>${comment.content}</p>
+                    ${comment.image ? `<img src="${comment.image}" alt="Comment Image" width="200">` : ''}
+                    ${comment.video ? `<video src="${comment.video}" controls width="300"></video>` : ''}
+                    <div>
+                        <span onclick="toggleLike('${comment._id}', ${userLiked})" style="cursor: pointer;">
+                            ${userLiked ? '❤️' : '🤍'} (${comment.likes.length})
+                        </span>
+                        ${isOwner ? `
+                            <button onclick="editComment('${comment._id}', '${comment.content}')">Edit</button>
+                            <button onclick="deleteComment('${comment._id}')">Delete</button>
+                        ` : ''}
+                    </div>
+                    <button onclick="replyToComment('${comment._id}', null, '${comment.user}', '${comment.userId}')">Reply</button>
+                </div>
+                <hr>
+            `;
+            modalBody.innerHTML = originalCommentHtml;
+
+            // Render replies below the original comment
+            modalBody.innerHTML += comment.replies && comment.replies.length > 0
+                ? renderReplies(comment.replies, commentId)
+                : '<p>No replies yet.</p>';
+        } else {
+            modalBody.innerHTML = '<p>Comment not found.</p>';
+        }
+
+        // Add a close button and refresh button
+        modalBody.innerHTML += '<span class="close-btn" onclick="closeRepliesModal()">&times;</span>';
+        const newRefreshButton = document.createElement('button');
+        newRefreshButton.id = 'refresh-replies-btn';
+        newRefreshButton.textContent = 'Refresh Replies';
+        newRefreshButton.style.marginTop = '10px';
+        newRefreshButton.onclick = refreshReplies;
+        modalBody.appendChild(newRefreshButton);
+
+        document.body.style.overflow = 'hidden';
+    };
+
+    // Initial load of replies
+    refreshReplies();
+
+    // Show the modal
+    repliesModal.style.display = 'block';
+}
+
+
+          
+
+    </script>
+</head>
+<body>
+    <h1>Comment Section</h1>
+    <button id="load-more-button" style="display: none;">See More</button>
+    <textarea id="comment-input" placeholder="Write a comment..."></textarea>
+    <input type="file" id="image-input" accept="image/*">
+    <input type="file" id="video-input" accept="video/*">
+    <button onclick="postComment()">Post Comment</button>
+    <div id="comment-section"></div>
+ <!-- Replies Modal -->
+    <div id="replies-modal">
+        <div class="modal-header">Replies</div>
+        <div id="replies-modal-body" class="modal-body"></div>
+        <div class="modal-footer">
+            <button onclick="closeRepliesModal()">Close</button>
+        </div>
+    </div>
+  <script>
+// Scroll logic
+window.addEventListener("load", () => {
+    const hash = window.location.hash; // Get the hash from the URL
+    if (hash.startsWith("#comment-")) {
+        const commentId = hash.substring(1); // Extract the full ID (remove #)
+        
+        const scrollToComment = () => {
+            const commentElement = document.getElementById(commentId);
+            if (commentElement) {
+                commentElement.scrollIntoView({ behavior: "smooth" });
+            } else {
+                // Retry if the element is not yet rendered
+                setTimeout(scrollToComment, 100);
+            }
+        };
+
+        scrollToComment(); // Start scrolling logic
+    }
+});
+  
+  </script>
+<script src="comment.js"></script>
+</body>
+</html>
+
