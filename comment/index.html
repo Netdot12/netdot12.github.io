@@ -60,7 +60,7 @@
         const currentUser = userInfo ? userInfo.data : null;
 
  async function fetchComments() {
-    const response = await fetch(`http://netdot12-github-io.vercel.app/comments?pageUrl=${encodeURIComponent(pageUrl)}&page=${currentPage}&limit=${commentsPerPage}&userId=${currentUser.id}`);
+    const response = await fetch(`https://netdot12-github-io.vercel.app/comments?pageUrl=${encodeURIComponent(pageUrl)}&page=${currentPage}&limit=${commentsPerPage}&userId=${currentUser.id}`);
     const comments = await response.json();
     currentReplies = comments;
     displayComments(comments, currentPage > 0);
