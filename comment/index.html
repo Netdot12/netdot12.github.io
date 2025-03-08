@@ -420,17 +420,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     imageInput.addEventListener('change', function() {
         if (imageInput.files.length > 0) {
-            videoInput.disabled = true;
-        } else {
-            videoInput.disabled = false;
-        }
+            videoInput.value = '';
+        } 
     });
 
     videoInput.addEventListener('change', function() {
         if (videoInput.files.length > 0) {
-            imageInput.disabled = true;
-        } else {
-            imageInput.disabled = false;
+            imageInput.value = '';
         }
     });
 });
