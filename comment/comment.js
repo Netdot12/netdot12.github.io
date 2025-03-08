@@ -219,84 +219,7 @@ function renderMedia(mediaUrl) {
 
     fetchComments(); // Refresh comments to reflect the like/unlike
 }
-  function replyToComment(commentId, replyId = null, commentOwner, commentOwnerId) {
-    // Create the modal
-    const modal = document.createElement('div');
-    modal.id = 'reply-modal';
-    modal.style.position = 'fixed';
-    modal.style.top = '50%';
-    modal.style.left = '50%';
-    modal.style.transform = 'translate(-50%, -50%)';
-    modal.style.background = 'white';
-    modal.style.padding = '20px';
-    modal.style.border = '1px solid #ccc';
-    modal.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
-    modal.style.zIndex = 1000;
-
-    // Modal content
-    modal.innerHTML = `
-        <form id="reply-form">
-            <h3>Reply to ${commentOwner}</h3>
-            <textarea id="reply-content" placeholder="Write your reply..." rows="4" style="width: 100%;"></textarea>
-            <br>
-            <label>Attach Image/Video:</label>
-            <input type="file" id="reply-file" accept="image/*,video/*">
-            <br><br>
-            <button type="submit">Submit Reply</button>
-            <button type="button" id="close-modal">Cancel</button>
-        </form>
-    `;
-
-    // Append the modal to the body
-    document.body.appendChild(modal);
-
-    // Handle form submission
-    const form = document.getElementById('reply-form');
-    form.onsubmit = async (e) => {
-        e.preventDefault();
-
-        if (!currentUser) {
-            alert("Please log in to reply.");
-            return;
-        }
-
-        const replyContent = document.getElementById('reply-content').value;
-        const fileInput = document.getElementById('reply-file');
-        const file = fileInput.files[0];
-        const user = currentUser.name;
-        const userId = currentUser.sub || currentUser.id;
-        const userImage = currentUser.picture.data.url || currentUser.picture; // Include userImage
-
-        const formData = new FormData();
-        formData.append('content', replyContent);
-        formData.append('replyTo', commentOwner);
-        formData.append('user', user);
-        formData.append('userId', userId);
-        formData.append('commentOwnerId', commentOwnerId);
-        formData.append('userImage', userImage); // Send userImage
-        if (file) {
-            formData.append('file', file);
-        }
-
-        const url = replyId
-            ? `https://netdot12-github-io.vercel.app/comments/${commentId}/replies/${replyId}`
-            : `https://netdot12-github-io.vercel.app/comments/${commentId}/reply`;
-
-        await fetch(url, {
-            method: 'POST',
-            body: formData,
-        }).then(fetchComments);
-
-        // Close the modal after submission
-        document.body.removeChild(modal);
-    };
-
-    // Close modal on cancel
-    document.getElementById('close-modal').onclick = () => {
-        document.body.removeChild(modal);
-    };
-}
-
+  
 // Function to edit a reply
 function editReply(commentId, replyId, currentContent) {
     // Create an edit modal
@@ -385,34 +308,5 @@ async function deleteReply(commentId, replyId) {
     }
 }
 
-// Extend the renderReplies function
-function renderReplies(replies, commentId) {
-    return replies.map(reply => `
-        <div>
-            <p>
-                ↳ 
-                <img src="${reply.userImage || 'default-avatar.png'}" alt="${reply.user}" width="20" height="20">
-                <strong>${reply.user}</strong>: 
-                <span style="color: blue;">@${reply.replyTo}</span>
-                ${reply.content}
-                <div 
-                    onclick="toggleReplyLike('${commentId}', '${reply._id}', ${reply.likes.includes(currentUser?.id)})" 
-                    style="cursor: pointer; color: ${reply.likes.includes(currentUser?.id) ? 'blue' : 'gray'};">
-                    ❤️ ${reply.likes.length} Like
-                </div>
-                <button onclick="editReply('${commentId}', '${reply._id}', '${reply.content}')">Edit</button>
-                <button onclick="deleteReply('${commentId}', '${reply._id}')">Delete</button>
-            </p>
-            ${reply.media ? renderMedia(reply.media) : ''}
-            <div>
-                <button onclick="replyToComment('${commentId}', '${reply._id}', '${reply.user}', '${reply.userId}')">Reply</button>
-            </div>
-            <div style="margin-left: 20px;">
-                ${renderReplies(reply.replies, commentId)}
-            </div>
-        </div>
-    `).join('');
-}
-  
       window.onload = fetchComments;
   
