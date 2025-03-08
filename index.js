@@ -16,7 +16,6 @@ const admin = require('firebase-admin');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use(express.static(path.join(__dirname, 'comment')));
 require('dotenv').config();
 
 // Serve all static files from the 'comment' folder
