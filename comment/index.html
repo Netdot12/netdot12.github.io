@@ -57,6 +57,9 @@
             width: 200px;
             height: 150px;
         }
+        input[type="file"] {
+            display: none;
+        }
   </style>
     <title>Comment Section with File Uploads</title>
     <script>
@@ -336,8 +339,18 @@ function showReplies(commentId, highlightReplyId = null) {
     <h1>Comment Section</h1>
     <button id="load-more-button" style="display: none;">See More</button>
     <textarea id="comment-input" placeholder="Write a comment..."></textarea>
-    <input type="file" id="image-input" accept="image/*">
+
+ <label for="image-input" class="file-input-label">
+ <i class="fas fa-image"></i> 
+  </label>
+
+ <input type="file" id="image-input" accept="image/*">
+
     <input type="file" id="video-input" accept="video/*">
+
+<label for="video-input" class="file-input-label">
+        <i class="fas fa-video"></i> 
+</label>
        <div id="previewContainer"></div>
     <button onclick="postComment()">Post Comment</button>
     <div id="comment-section"></div>
