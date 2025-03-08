@@ -64,6 +64,11 @@
         input[type="file"] {
             display: none;
         }
+        .file-input-container {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 10px;
+        }
   </style>
     <title>Comment Section with File Uploads</title>
     <script>
@@ -344,18 +349,23 @@ function showReplies(commentId, highlightReplyId = null) {
     <button id="load-more-button" style="display: none;">See More</button>
     <textarea id="comment-input" placeholder="Write a comment..."></textarea>
 
- <label for="image-input" class="file-input-label">
+
+ <div class="file-input-container">
+<label for="image-input" class="file-input-label">
  <i class="fas fa-image"></i> 
   </label>
+
+<label for="video-input" class="file-input-label">
+        <i class="fas fa-video"></i> 
+</label>
+</div>
+ 
 
  <input type="file" id="image-input" accept="image/*">
 
     <input type="file" id="video-input" accept="video/*">
 
-<label for="video-input" class="file-input-label">
-        <i class="fas fa-video"></i> 
-</label>
-       <div id="previewContainer"></div>
+    <div id="previewContainer"></div>
     <button onclick="postComment()">Post Comment</button>
     <div id="comment-section"></div>
  <!-- Replies Modal -->
