@@ -341,6 +341,57 @@ function showReplies(commentId, highlightReplyId = null) {
         </div>
     </div>
   <script>
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    const previewContainer = document.getElementById('previewContainer');
+
+    // Clear any existing preview
+    previewContainer.innerHTML = '';
+
+    if (file) {
+        const fileType = file.type;
+
+        if (fileType.startsWith('image/')) {
+            // Handle image preview
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.classList.add('preview-image'); // Add class for styling
+            previewContainer.appendChild(img);
+        } else if (fileType.startsWith('video/')) {
+            // Handle video preview
+            const video = document.createElement('video');
+            video.src = URL.createObjectURL(file);
+            video.controls = true; // Add controls to the video element
+            video.classList.add('preview-video'); // Add class for styling
+            previewContainer.appendChild(video);
+        }
+    }
+}
+
+// Attach event listeners to both inputs
+document.getElementById('image-input').addEventListener('change', handleFileSelect);
+document.getElementById('video-input').addEventListener('change', handleFileSelect);
+
+document.addEventListener('DOMContentLoaded', function() {
+    const imageInput = document.getElementById('image-input');
+    const videoInput = document.getElementById('video-input');
+
+    imageInput.addEventListener('change', function() {
+        if (imageInput.files.length > 0) {
+            videoInput.disabled = true;
+        } else {
+            videoInput.disabled = false;
+        }
+    });
+
+    videoInput.addEventListener('change', function() {
+        if (videoInput.files.length > 0) {
+            imageInput.disabled = true;
+        } else {
+            imageInput.disabled = false;
+        }
+    });
+});
 // Scroll logic
 window.addEventListener("load", () => {
     const hash = window.location.hash; // Get the hash from the URL
