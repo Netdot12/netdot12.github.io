@@ -77,7 +77,8 @@ async function postComment() {
     const imageFile = document.getElementById('image-input').files[0];
     const videoFile = document.getElementById('video-input').files[0];
     const currentToken = localStorage.getItem('fcmToken'); // Check if token is stored
-
+const spinner = document.getElementById('spinner');
+spinner.style.display = 'block';
     if (!currentUser) {
         alert("Please log in to comment.");
         return;
@@ -94,12 +95,24 @@ async function postComment() {
     if (imageFile) formData.append('image', imageFile);
     if (videoFile) formData.append('video', videoFile);
 
+    try {
     const response = await fetch('/comments', {
         method: 'POST',
         body: formData,
     });
 
-  
+    if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('Success:', data);
+} catch (error) {
+    console.error('Error occurred:', error);
+} finally {
+    spinner.style.display = 'none';
+}
+
     fetchComments(); // Refresh the list of comments
 }
 
