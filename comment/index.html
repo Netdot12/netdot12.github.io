@@ -99,53 +99,53 @@ let currentPage = 0;
 
 
 async function postComment() {
-    const content = document.getElementById('comment-input').value;
-    const imageFile = document.getElementById('image-input').files[0];
-    const videoFile = document.getElementById('video-input').files[0];
-    const currentToken = localStorage.getItem('fcmToken'); // Check if token is stored
-const spinner = document.getElementById('spinner');
-spinner.style.display = 'block';
+    const contentInput = document.getElementById('comment-input');
+    const imageInput = document.getElementById('image-input');
+    const videoInput = document.getElementById('video-input');
+    const spinner = document.getElementById('spinner');
+
     if (!currentUser) {
         alert("Please log in to comment.");
         return;
     }
 
+    spinner.style.display = 'block';
+
     const formData = new FormData();
     formData.append('pageUrl', pageUrl);
-    formData.append('content', content);
+    formData.append('content', contentInput.value);
     formData.append('user', currentUser.name);
     formData.append('userId', currentUser.sub || currentUser.id);
     formData.append('userImage', currentUser.picture);
-    formData.append('fcmtoken', currentToken);
+    formData.append('fcmtoken', localStorage.getItem('fcmToken'));
 
-    if (imageFile) formData.append('image', imageFile);
-    if (videoFile) formData.append('video', videoFile);
-
-    try {
-    const response = await fetch('/comments', {
-        method: 'POST',
-        body: formData,
-    });
-
-    if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+    if (imageInput.files.length > 0) {
+        formData.append('image', imageInput.files[0]);
+    }
+    if (videoInput.files.length > 0) {
+        formData.append('video', videoInput.files[0]);
     }
 
-    const data = await response.json();
-    console.log('Success:', data);
-} catch (error) {
-    console.error('Error occurred:', error);
-} finally {
-    spinner.style.display = 'none';
-    content.value = '';
-    imageFile.value = '';
-    videoFile.value = '';
-}
+    try {
+        const response = await fetch('/comments', { method: 'POST', body: formData });
 
-    fetchComments(); // Refresh the list of comments
-}
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
 
-  
+        const data = await response.json();
+        console.log('Success:', data);
+    } catch (error) {
+        console.error('Error occurred:', error);
+    } finally {
+        spinner.style.display = 'none';
+        contentInput.value = '';
+        imageInput.value = ''; // Clear file input
+        videoInput.value = '';
+    }
+
+    fetchComments(); // Refresh comments
+}
 
 fetchComments();
 
