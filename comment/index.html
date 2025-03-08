@@ -82,7 +82,7 @@ async function postComment() {
     formData.append('content', content);
     formData.append('user', currentUser.name);
     formData.append('userId', currentUser.sub || currentUser.id);
-    formData.append('userImage', currentUser.picture.data.url || currentUser.picture);
+    formData.append('userImage', currentUser.picture);
     formData.append('fcmtoken', currentToken);
 
     if (imageFile) formData.append('image', imageFile);
