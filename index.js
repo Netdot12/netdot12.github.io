@@ -290,7 +290,7 @@ app.post('/comments/:commentId/reply', upload.single('file'), async (req, res) =
                         },
                        webpush: {
                            fcm_options: {
-                               link: `http://localhost:3000/#comment-${commentId}`
+                               link: `https://netdot12-github-io.vercel.app/#comment-${commentId}`
                            }
                        },
                         token: comment.fcmtoken,
@@ -505,3 +505,4 @@ function findReply(replies, replyId) {
 app.listen(PORT, () => {
     console.log(`Server running on port ${port}`);
 });
+
