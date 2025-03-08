@@ -60,7 +60,7 @@
         const currentUser = userInfo ? userInfo.data : null;
 
  async function fetchComments() {
-    const response = await fetch(`http://localhost:3000/comments?pageUrl=${encodeURIComponent(pageUrl)}`);
+    const response = await fetch(`https://netdot12-github-io.vercel.app/comments?pageUrl=${encodeURIComponent(pageUrl)}`);
     const comments = await response.json();
     currentReplies = comments; // Update currentReplies here
     displayComments(comments);
