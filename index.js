@@ -148,11 +148,10 @@ app.post('/comments', upload.fields([{ name: 'image' }, { name: 'video' }]), asy
     try {
         const { pageUrl, content, user, userId, userImage, fcmtoken } = req.body;
 
-        // Get file paths if files were uploaded
-        const imagePath = req.files.image ? `/uploads/${req.files.image[0].filename}` : null;
-        const videoPath = req.files.video ? `/uploads/${req.files.video[0].filename}` : null;
+        // Ensure files exist before accessing them
+        const imagePath = req.files?.image?.[0] ? `/uploads/${req.files.image[0].filename}` : null;
+        const videoPath = req.files?.video?.[0] ? `/uploads/${req.files.video[0].filename}` : null;
 
-        // Create a new comment instance
         const newComment = new Comment({
             pageUrl,
             content,
@@ -164,18 +163,13 @@ app.post('/comments', upload.fields([{ name: 'image' }, { name: 'video' }]), asy
             video: videoPath,
             likes: [],
             replies: [],
-            createdAt: new Date(), // Add the creation timestamp
+            createdAt: new Date(),
         });
 
-        // Save the comment to the database
         await newComment.save();
-
-        // Format the timestamp using timeago.js
-        const timeAgo = format(newComment.createdAt);
-        console.log('New Comment:', newComment);
-        res.status(201).json({ ...newComment.toObject(), timeAgo }); // Include the formatted timestamp
+       res.status(201).json({ ...newComment.toObject() });
     } catch (error) {
-        console.error(error);
+        console.error('Upload Error:', error);
         res.status(500).json({ message: 'Error saving comment', error });
     }
 });
