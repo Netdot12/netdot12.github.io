@@ -26,6 +26,6 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'comment', 'index.html'));
 });
 
-app.listen(port, () => {
+app.listen(PORT, () => {
     console.log(`Server running on port ${port}`);
 });
