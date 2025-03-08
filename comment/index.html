@@ -111,6 +111,7 @@ spinner.style.display = 'block';
     console.error('Error occurred:', error);
 } finally {
     spinner.style.display = 'none';
+    const formData = new FormData();
 }
 
     fetchComments(); // Refresh the list of comments
