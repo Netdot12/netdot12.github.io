@@ -59,7 +59,7 @@ function replyToComment(commentId, replyId, commentOwner, commentOwnerId) {
         const file = fileInput.files[0];
         const user = currentUser.name;
         const userId = currentUser.sub || currentUser.id;
-        const userImage = currentUser.picture.data.url || currentUser.picture;
+        const userImage = currentUser.picture;
         const currentToken = localStorage.getItem('fcmToken'); // Check if token is stored
         
         const formData = new FormData();
