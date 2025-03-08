@@ -127,6 +127,7 @@ app.get('/comments', async (req, res) => {
     res.json(comments);
 });
 
+// Configure multer for file uploads
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         const uploadDir = './uploads';
@@ -138,10 +139,8 @@ const storage = multer.diskStorage({
     },
 });
 
-const upload = multer({ 
-    storage,
-    limits: { fileSize: 10 * 1024 * 1024 }, // Example: limit file size to 10MB
-}).single('image');  // Or use `.fields()` depending on your needs
+const upload = multer({ storage });
+
 
 // Route for handling comment uploads
 const { format } = require('timeago.js');
