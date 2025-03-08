@@ -99,15 +99,7 @@ async function postComment() {
         body: formData,
     });
 
-    const data = await response.json(); // Receive the comment with timeAgo
-
-    // Update your UI with the new comment, including timeAgo
-    const newComment = data;
-    newComment.timeAgo = newComment.timeAgo || 'Just now'; // Default if timeAgo is undefined
-
-    // Now, display the comment with the correct timeAgo value
-    displayComment(newComment);
-    
+  
     fetchComments(); // Refresh the list of comments
 }
 
