@@ -141,7 +141,8 @@ fetchComments();
     interval = Math.floor(seconds / 60);
     if (interval >= 1) return interval === 1 ? "1 minute ago" : `${interval} minutes ago`;
 
-  }
+    return "Just now";
+}
 
 
 function displayComments(comments, append = false) {
