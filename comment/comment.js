@@ -74,7 +74,7 @@ function replyToComment(commentId, replyId, commentOwner, commentOwnerId) {
 
         if (file) formData.append('file', file);
 
-        const url = `http://localhost:3000/comments/${commentId}/reply`;
+        const url = `https://netdot12-github-io.vercel.app/comments/${commentId}/reply`;
 
         try {
             await fetch(url, { method: 'POST', body: formData });
@@ -125,7 +125,7 @@ function editComment(commentId, currentContent) {
         }
 
         try {
-            await fetch(`https://localhost:3000/comments/${commentId}`, {
+            await fetch(`https://netdot12-github-io.vercel.app/comments/${commentId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -160,7 +160,7 @@ async function deleteComment(commentId) {
     if (!confirmDelete) return;
 
     try {
-        await fetch(`https://localhost:3000/comments/${commentId}`, {
+        await fetch(`https://netdot12-github-io.vercel.app/comments/${commentId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -193,8 +193,8 @@ function renderMedia(mediaUrl) {
     const userId = currentUser.sub || currentUser.id;
 
     const url = isLiked
-        ? `https://localhost:3000/comments/${commentId}/unlike`
-        : `https://localhost:3000/comments/${commentId}/like`;
+        ? `https://netdot12-github-io.vercel.app/comments/${commentId}/unlike`
+        : `https://netdot12-github-io.vercel.app/comments/${commentId}/like`;
 
     await fetch(url, {
         method: 'POST',
@@ -211,7 +211,7 @@ function renderMedia(mediaUrl) {
         return;
     }
 
-    await fetch(`https://localhost:3000/comments/${commentId}/replies/${replyId}/like`, {
+    await fetch(`https://netdot12-github-io.vercel.app/comments/${commentId}/replies/${replyId}/like`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: currentUser.id }),
@@ -279,8 +279,8 @@ function renderMedia(mediaUrl) {
         }
 
         const url = replyId
-            ? `https://localhost:3000/comments/${commentId}/replies/${replyId}`
-            : `https://localhost:3000/comments/${commentId}/reply`;
+            ? `https://netdot12-github-io.vercel.app/comments/${commentId}/replies/${replyId}`
+            : `https://netdot12-github-io.vercel.app/comments/${commentId}/reply`;
 
         await fetch(url, {
             method: 'POST',
@@ -332,7 +332,7 @@ function editReply(commentId, replyId, currentContent) {
         }
 
         try {
-            await fetch(`https://localhost:3000/comments/${commentId}/replies/${replyId}`, {
+            await fetch(`https://netdot12-github-io.vercel.app/comments/${commentId}/replies/${replyId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -369,7 +369,7 @@ async function deleteReply(commentId, replyId) {
     if (!confirmDelete) return;
 
     try {
-        await fetch(`https://localhost:3000/comments/${commentId}/replies/${replyId}`, {
+        await fetch(`https://netdot12-github-io.vercel.app/comments/${commentId}/replies/${replyId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
