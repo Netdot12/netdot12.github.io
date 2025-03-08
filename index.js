@@ -144,7 +144,6 @@ const upload = multer({ storage });
 
 // Route for handling comment uploads
 const { format } = require('timeago.js');
-console.log('Uploaded files');
 app.post('/comments', upload.fields([{ name: 'image' }, { name: 'video' }]), async (req, res) => {
     try {
         const { pageUrl, content, user, userId, userImage, fcmtoken } = req.body;
