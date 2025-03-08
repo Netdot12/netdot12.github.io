@@ -88,12 +88,23 @@ async function postComment() {
     if (imageFile) formData.append('image', imageFile);
     if (videoFile) formData.append('video', videoFile);
 
-    await fetch('/comments', {
+    const response = await fetch('/comments', {
         method: 'POST',
         body: formData,
     });
-     fetchComments();
+
+    const data = await response.json(); // Receive the comment with timeAgo
+
+    // Update your UI with the new comment, including timeAgo
+    const newComment = data;
+    newComment.timeAgo = newComment.timeAgo || 'Just now'; // Default if timeAgo is undefined
+
+    // Now, display the comment with the correct timeAgo value
+    displayComment(newComment);
+    
+    fetchComments(); // Refresh the list of comments
 }
+
   
 
 fetchComments();
