@@ -138,7 +138,9 @@ spinner.style.display = 'block';
     console.error('Error occurred:', error);
 } finally {
     spinner.style.display = 'none';
-    formData.forEach((_, key) => formData.delete(key));
+    content.value = '';
+    imageFile.value = '';
+    videoFile.value = '';
 }
 
     fetchComments(); // Refresh the list of comments
