@@ -168,6 +168,7 @@ app.post('/comments', upload.fields([{ name: 'image' }, { name: 'video' }]), asy
 
         await newComment.save();
        res.status(201).json({ ...newComment.toObject() });
+console.log('sucess');
     } catch (error) {
         console.error('Upload Error:', error);
         res.status(500).json({ message: 'Error saving comment', error });
