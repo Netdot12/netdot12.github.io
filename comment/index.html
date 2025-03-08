@@ -60,67 +60,14 @@
         const currentUser = userInfo ? userInfo.data : null;
 
  async function fetchComments() {
-    const response = await fetch(`https://netdot12-github-io.vercel.app/comments?pageUrl=${encodeURIComponent(pageUrl)}`);
+    const response = await fetch(`http://netdot12-github-io.vercel.app/comments?pageUrl=${encodeURIComponent(pageUrl)}&page=${currentPage}&limit=${commentsPerPage}&userId=${currentUser.id}`);
     const comments = await response.json();
-    currentReplies = comments; // Update currentReplies here
-    displayComments(comments);
+    currentReplies = comments;
+    displayComments(comments, currentPage > 0);
 }
 
 
-function displayComments(comments, append = false) {
-    const commentSection = document.getElementById('comment-section');
-    if (!append) {
-        commentSection.innerHTML = ''; // Clear existing comments if not appending
-    }
 
-    comments.forEach(comment => {
-        const userLiked = currentUser && comment.likes.includes(currentUser.sub || currentUser.id);
-        const isOwner = currentUser && (currentUser.sub === comment.userId || currentUser.id === comment.userId);
-        const timeAgo = formatTimeAgo(new Date(comment.createdAt));
-
-        const commentDiv = document.createElement('div');
-        commentDiv.id = `comment-${comment._id}`;
-        commentDiv.innerHTML = `
-            <div>
-                <p>
-                    <img src="${comment.userImage || 'default-avatar.png'}" alt="${comment.user}" width="60" height="60">
-                    <strong>${comment.user}</strong> - <span class="time-ago">${timeAgo}</span>
-                </p>
-                <p>${comment.content}</p>
-                ${comment.image ? `<img src="${comment.image}" alt="Comment Image" width="200">` : ''}
-                ${comment.video ? `<video src="${comment.video}" controls width="300"></video>` : ''}
-                <div>
-                    <span onclick="toggleLike('${comment._id}', ${userLiked})" style="cursor: pointer;">
-                        ${userLiked ? '❤️' : '🤍'} (${comment.likes.length})
-                    </span>
-                    ${isOwner ? `
-                        <button onclick="editComment('${comment._id}', '${comment.content}')">Edit</button>
-                        <button onclick="deleteComment('${comment._id}')">Delete</button>
-                    ` : ''}
-                </div>
-                <button onclick="replyToComment('${comment._id}', null, '${comment.user}', '${comment.userId}')">Reply</button>
-                <button id="view-replies" onclick="showReplies('${comment._id}')">View Replies</button>
-            </div>
-        `;
-        commentSection.appendChild(commentDiv);
-    });
-
-    // Add "Load More" button if comments are returned
-    const loadMoreBtn = document.getElementById('load-more');
-    if (!loadMoreBtn && comments.length === commentsPerPage) {
-        const button = document.createElement('button');
-        button.id = 'load-more';
-        button.textContent = 'Load More';
-        button.onclick = () => {
-            currentPage++; // Increment the page count
-            fetchComments();
-        };
-        commentSection.appendChild(button);
-    } else if (loadMoreBtn && comments.length < commentsPerPage) {
-        // Remove "Load More" button if no more comments to load
-        loadMoreBtn.remove();
-    }
-}
 
 async function postComment() {
     const content = document.getElementById('comment-input').value;
@@ -191,7 +138,60 @@ let commentsPerPage = 10; // Set a default value
   }
 
 
+function displayComments(comments, append = false) {
+    const commentSection = document.getElementById('comment-section');
+    if (!append) {
+        commentSection.innerHTML = ''; // Clear existing comments if not appending
+    }
 
+    comments.forEach(comment => {
+        const userLiked = currentUser && comment.likes.includes(currentUser.sub || currentUser.id);
+        const isOwner = currentUser && (currentUser.sub === comment.userId || currentUser.id === comment.userId);
+        const timeAgo = formatTimeAgo(new Date(comment.createdAt));
+
+        const commentDiv = document.createElement('div');
+        commentDiv.id = `comment-${comment._id}`;
+        commentDiv.innerHTML = `
+            <div>
+                <p>
+                    <img src="${comment.userImage || 'default-avatar.png'}" alt="${comment.user}" width="60" height="60">
+                    <strong>${comment.user}</strong> - <span class="time-ago">${timeAgo}</span>
+                  <p>${comment.content}</p>
+                </p>
+                ${comment.image ? `<img src="${comment.image}" alt="Comment Image" width="200">` : ''}
+                ${comment.video ? `<video src="${comment.video}" controls width="300"></video>` : ''}
+                <div>
+                    <span onclick="toggleLike('${comment._id}', ${userLiked})" style="cursor: pointer;">
+                        ${userLiked ? '❤️' : '🤍'} (${comment.likes.length})
+                    </span>
+                    ${isOwner ? `
+                        <button onclick="editComment('${comment._id}', '${comment.content}')">Edit</button>
+                        <button onclick="deleteComment('${comment._id}')">Delete</button>
+                    ` : ''}
+                </div>
+                <button onclick="replyToComment('${comment._id}', null, '${comment.user}', '${comment.userId}')">Reply</button>
+                <button id="view-replies" onclick="showReplies('${comment._id}')">View Replies</button>
+            </div>
+        `;
+        commentSection.appendChild(commentDiv);
+    });
+
+    // Add "Load More" button if comments are returned
+    const loadMoreBtn = document.getElementById('load-more');
+    if (!loadMoreBtn && comments.length === commentsPerPage) {
+        const button = document.createElement('button');
+        button.id = 'load-more';
+        button.textContent = 'Load More';
+        button.onclick = () => {
+            currentPage++; // Increment the page count
+            fetchComments();
+        };
+        commentSection.appendChild(button);
+    } else if (loadMoreBtn && comments.length < commentsPerPage) {
+        // Remove "Load More" button if no more comments to load
+        loadMoreBtn.remove();
+    }
+}
 
 function renderReplies(replies, commentId) {
     // Sort replies by date added (most recent first)
