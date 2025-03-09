@@ -12,6 +12,8 @@ const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
 const admin = require('firebase-admin');
+const { Octokit } = require('@octokit/rest');
+const { format } = require('timeago.js');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -127,58 +129,107 @@ app.get('/comments', async (req, res) => {
     res.json(comments);
 });
 
-// Configure multer for file uploads
+// Set up your file storage for multer
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        const uploadDir = './uploads';
-        if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
-        cb(null, uploadDir);
-    },
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}-${file.originalname}`);
-    },
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, 'uploads')); // Store uploaded files locally
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname); // Use a unique filename
+  }
 });
 
-const upload = multer({ storage });
+const upload = multer({ storage: storage });
 
 
 // Route for handling comment uploads
-const { format } = require('timeago.js');
+
+// Define the route for handling comments and file uploads
 app.post('/comments', upload.fields([{ name: 'image' }, { name: 'video' }]), async (req, res) => {
-    try {
-        const { pageUrl, content, user, userId, userImage, fcmtoken } = req.body;
+  try {
+    const { pageUrl, content, user, userId, userImage, fcmtoken } = req.body;
 
-        // Ensure files exist before accessing them
-        const imagePath = req.files?.image?.[0] ? `/uploads/${req.files.image[0].filename}` : null;
-        const videoPath = req.files?.video?.[0] ? `/uploads/${req.files.video[0].filename}` : null;
+    // Handle files if uploaded
+    const imagePath = req.files?.image?.[0] ? `/uploads/${req.files.image[0].filename}` : null;
+    const videoPath = req.files?.video?.[0] ? `/uploads/${req.files.video[0].filename}` : null;
 
-        const newComment = new Comment({
-            pageUrl,
-            content,
-            user,
-            userId,
-            userImage,
-            fcmtoken,
-            image: imagePath,
-            video: videoPath,
-            likes: [],
-            replies: [],
-            createdAt: new Date(),
-        });
+    // Handle file upload to GitHub (for each file uploaded)
+    const fileUploadPromises = [];
 
-        await newComment.save();
-       res.status(201).json({ ...newComment.toObject() });
-console.log('sucess');
-    } catch (error) {
-        console.error('Upload Error:', error);
-        res.status(500).json({ message: 'Error saving comment', error });
+    if (imagePath) {
+      const fileContent = fs.readFileSync(path.join(__dirname, imagePath));
+      const encodedContent = Buffer.from(fileContent).toString('base64');
+      
+      fileUploadPromises.push(uploadFileToGitHub(imagePath, encodedContent));
     }
+
+    if (videoPath) {
+      const fileContent = fs.readFileSync(path.join(__dirname, videoPath));
+      const encodedContent = Buffer.from(fileContent).toString('base64');
+      
+      fileUploadPromises.push(uploadFileToGitHub(videoPath, encodedContent));
+    }
+
+    // Wait for all file uploads to GitHub
+    await Promise.all(fileUploadPromises);
+
+    // Save the comment to your database (if using MongoDB or another DB)
+    const newComment = new Comment({
+      pageUrl,
+      content,
+      user,
+      userId,
+      userImage,
+      fcmtoken,
+      image: imagePath,
+      video: videoPath,
+      createdAt: new Date(),
+    });
+
+    await newComment.save();
+
+    // Format and send the response
+    const timeAgo = format(newComment.createdAt);
+    res.status(201).json({ ...newComment.toObject(), timeAgo });
+
+  } catch (error) {
+    console.error('Error occurred:', error);
+    res.status(500).json({ message: 'Error saving comment', error });
+  }
 });
+
+// Function to upload a file to GitHub
+async function uploadFileToGitHub(filePath, content) {
+  try {
+    const response = await octokit.repos.createOrUpdateFileContents({
+      owner: 'Netdot12',
+      repo: 'netdot12.github.io',
+      path: filePath.replace(/^uploads\//, ''), // Remove 'uploads/' from the file path for the repo
+      message: `Upload file: ${filePath}`,
+      content: content,
+      committer: {
+        name: 'Netdot12',
+        email: 'netdot1234@gmail.com',
+      },
+      author: {
+        name: 'Netdot12',
+        email: 'netdot1234@gmail.com',
+      },
+      mode: '100644', // File permission
+    });
+
+    console.log(`File uploaded to GitHub: ${filePath}`);
+  } catch (error) {
+    console.error(`Error uploading file ${filePath}:`, error);
+  }
+}
+
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Like a comment
 app.post('/comments/:commentId/like', async (req, res) => {
+
     const { commentId } = req.params;
     const { userId } = req.body; // User ID of the liker
 
