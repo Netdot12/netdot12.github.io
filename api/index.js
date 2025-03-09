@@ -16,19 +16,9 @@ const admin = require('firebase-admin');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+app.use(express.static(path.join(__dirname, 'comment')));
 require('dotenv').config();
 
-<<<<<<< HEAD
-// Serve all static files from the 'comment' folder
-app.use(express.static(path.join(__dirname, 'comment')));
-
-// Route to handle homepage or index.html
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'comment', 'index.html'));
-});
-
-=======
->>>>>>> 9c23f8b382f78bd8837682956ca6fe21bc86c110
 // Initialize Firebase Admin SDK
 admin.initializeApp({
     credential: admin.credential.cert({
@@ -144,17 +134,18 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-
 // Route for handling comment uploads
 const { format } = require('timeago.js');
+
 app.post('/comments', upload.fields([{ name: 'image' }, { name: 'video' }]), async (req, res) => {
     try {
         const { pageUrl, content, user, userId, userImage, fcmtoken } = req.body;
 
-        // Ensure files exist before accessing them
-        const imagePath = req.files?.image?.[0] ? `/uploads/${req.files.image[0].filename}` : null;
-        const videoPath = req.files?.video?.[0] ? `/uploads/${req.files.video[0].filename}` : null;
+        // Get file paths if files were uploaded
+        const imagePath = req.files.image ? `/uploads/${req.files.image[0].filename}` : null;
+        const videoPath = req.files.video ? `/uploads/${req.files.video[0].filename}` : null;
 
+        // Create a new comment instance
         const newComment = new Comment({
             pageUrl,
             content,
@@ -166,14 +157,18 @@ app.post('/comments', upload.fields([{ name: 'image' }, { name: 'video' }]), asy
             video: videoPath,
             likes: [],
             replies: [],
-            createdAt: new Date(),
+            createdAt: new Date(), // Add the creation timestamp
         });
 
+        // Save the comment to the database
         await newComment.save();
-       res.status(201).json({ ...newComment.toObject() });
-console.log('sucess');
+
+        // Format the timestamp using timeago.js
+        const timeAgo = format(newComment.createdAt);
+        console.log('New Comment:', newComment);
+        res.status(201).json({ ...newComment.toObject(), timeAgo }); // Include the formatted timestamp
     } catch (error) {
-        console.error('Upload Error:', error);
+        console.error(error);
         res.status(500).json({ message: 'Error saving comment', error });
     }
 });
@@ -288,7 +283,7 @@ app.post('/comments/:commentId/reply', upload.single('file'), async (req, res) =
                         },
                        webpush: {
                            fcm_options: {
-                               link: `https://netdot12-github-io.vercel.app/#comment-${commentId}`
+                               link: `http://localhost:3000/#comment-${commentId}`
                            }
                        },
                         token: comment.fcmtoken,
@@ -501,5 +496,5 @@ function findReply(replies, replyId) {
 
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${port}`);
+    console.log(`Server is running on http://localhost:${PORT}`);
 });

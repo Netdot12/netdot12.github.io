@@ -18,7 +18,6 @@ app.use(bodyParser.json());
 
 require('dotenv').config();
 
-<<<<<<< HEAD
 // Serve all static files from the 'comment' folder
 app.use(express.static(path.join(__dirname, 'comment')));
 
@@ -27,8 +26,6 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'comment', 'index.html'));
 });
 
-=======
->>>>>>> 9c23f8b382f78bd8837682956ca6fe21bc86c110
 // Initialize Firebase Admin SDK
 admin.initializeApp({
     credential: admin.credential.cert({
@@ -503,3 +500,4 @@ function findReply(replies, replyId) {
 app.listen(PORT, () => {
     console.log(`Server running on port ${port}`);
 });
+
