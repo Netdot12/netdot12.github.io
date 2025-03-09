@@ -2,6 +2,7 @@ const express = require('express');
 const PORT = process.env.PORT || 3000;
 const app = express();
 const formidable = require('formidable');
+const path = require('path');
 const fs = require('fs');
 const { put } = require('@vercel/blob'); // Assuming you're using Vercel Blob's client
 // Serve all static files from the 'comment' folder
