@@ -1,8 +1,5 @@
 {
-  "engines": {
-    "node": "23.9.0"
-  },
-  "type": "module",
+ 
   "scripts": {
     "start": "node index.js"
   },
