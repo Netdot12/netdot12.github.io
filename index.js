@@ -89,6 +89,43 @@ app.get('/config/facebook', (req, res) => {
 });
 
 
+const { Octokit } = require("@octokit/rest");
+const fs = require('fs');
+
+// Instantiate Octokit with authentication token
+const octokit = new Octokit({
+  auth: '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',
+});
+
+// Upload the file to GitHub repository
+async function uploadFile() {
+  const filePath = './okay.js';
+  const content = fs.readFileSync(filePath, 'utf8');
+
+  try {
+    const response = await octokit.repos.createOrUpdateFileContents({
+      owner: 'Netdot12',
+      repo: 'netdot12.github.io',
+      path: 'uploads/okay.js', // path in the repo for the new file
+      message: 'Upload okay.js file',
+      content: Buffer.from(content).toString('base64'),
+      committer: {
+        name: 'Netdot12',
+        email: 'netdot1234@gmail.com',
+      },
+      author: {
+        name: 'Netdot12',
+        email: 'netdot1234@gmail.com',
+      },
+      mode: '100644', // setting file permissions
+    });
+    console.log('File uploaded successfully:', response.data);
+  } catch (error) {
+    console.error('Error uploading file:', error);
+  }
+}
+
+uploadFile();
 
 // Connect to MongoDB Atlas
 mongoose.connect('mongodb+srv://Tuneflix:ZcjTP5jG4qyKkOZG@tuneflix.b1vcn.mongodb.net/?retryWrites=true&w=majority&appName=Tuneflix')
