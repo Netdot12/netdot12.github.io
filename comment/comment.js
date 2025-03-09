@@ -59,7 +59,7 @@ function replyToComment(commentId, replyId, commentOwner, commentOwnerId) {
         const file = fileInput.files[0];
         const user = currentUser.name;
         const userId = currentUser.sub || currentUser.id;
-        const userImage = currentUser.picture.data.url || currentUser.picture;
+        const userImage = currentUser.picture;
         const currentToken = localStorage.getItem('fcmToken'); // Check if token is stored
         
         const formData = new FormData();
@@ -74,7 +74,7 @@ function replyToComment(commentId, replyId, commentOwner, commentOwnerId) {
 
         if (file) formData.append('file', file);
 
-        const url = `http://localhost:3000/comments/${commentId}/reply`;
+        const url = `https://netdot12-github-io.vercel.app/comments/${commentId}/reply`;
 
         try {
             await fetch(url, { method: 'POST', body: formData });
@@ -125,7 +125,7 @@ function editComment(commentId, currentContent) {
         }
 
         try {
-            await fetch(`https://localhost:3000/comments/${commentId}`, {
+            await fetch(`https://netdot12-github-io.vercel.app/comments/${commentId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -160,7 +160,7 @@ async function deleteComment(commentId) {
     if (!confirmDelete) return;
 
     try {
-        await fetch(`https://localhost:3000/comments/${commentId}`, {
+        await fetch(`https://netdot12-github-io.vercel.app/comments/${commentId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -193,8 +193,8 @@ function renderMedia(mediaUrl) {
     const userId = currentUser.sub || currentUser.id;
 
     const url = isLiked
-        ? `https://localhost:3000/comments/${commentId}/unlike`
-        : `https://localhost:3000/comments/${commentId}/like`;
+        ? `https://netdot12-github-io.vercel.app/comments/${commentId}/unlike`
+        : `https://netdot12-github-io.vercel.app/comments/${commentId}/like`;
 
     await fetch(url, {
         method: 'POST',
@@ -211,7 +211,7 @@ function renderMedia(mediaUrl) {
         return;
     }
 
-    await fetch(`https://localhost:3000/comments/${commentId}/replies/${replyId}/like`, {
+    await fetch(`https://netdot12-github-io.vercel.app/comments/${commentId}/replies/${replyId}/like`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: currentUser.id }),
@@ -219,84 +219,7 @@ function renderMedia(mediaUrl) {
 
     fetchComments(); // Refresh comments to reflect the like/unlike
 }
-  function replyToComment(commentId, replyId = null, commentOwner, commentOwnerId) {
-    // Create the modal
-    const modal = document.createElement('div');
-    modal.id = 'reply-modal';
-    modal.style.position = 'fixed';
-    modal.style.top = '50%';
-    modal.style.left = '50%';
-    modal.style.transform = 'translate(-50%, -50%)';
-    modal.style.background = 'white';
-    modal.style.padding = '20px';
-    modal.style.border = '1px solid #ccc';
-    modal.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
-    modal.style.zIndex = 1000;
-
-    // Modal content
-    modal.innerHTML = `
-        <form id="reply-form">
-            <h3>Reply to ${commentOwner}</h3>
-            <textarea id="reply-content" placeholder="Write your reply..." rows="4" style="width: 100%;"></textarea>
-            <br>
-            <label>Attach Image/Video:</label>
-            <input type="file" id="reply-file" accept="image/*,video/*">
-            <br><br>
-            <button type="submit">Submit Reply</button>
-            <button type="button" id="close-modal">Cancel</button>
-        </form>
-    `;
-
-    // Append the modal to the body
-    document.body.appendChild(modal);
-
-    // Handle form submission
-    const form = document.getElementById('reply-form');
-    form.onsubmit = async (e) => {
-        e.preventDefault();
-
-        if (!currentUser) {
-            alert("Please log in to reply.");
-            return;
-        }
-
-        const replyContent = document.getElementById('reply-content').value;
-        const fileInput = document.getElementById('reply-file');
-        const file = fileInput.files[0];
-        const user = currentUser.name;
-        const userId = currentUser.sub || currentUser.id;
-        const userImage = currentUser.picture.data.url || currentUser.picture; // Include userImage
-
-        const formData = new FormData();
-        formData.append('content', replyContent);
-        formData.append('replyTo', commentOwner);
-        formData.append('user', user);
-        formData.append('userId', userId);
-        formData.append('commentOwnerId', commentOwnerId);
-        formData.append('userImage', userImage); // Send userImage
-        if (file) {
-            formData.append('file', file);
-        }
-
-        const url = replyId
-            ? `https://localhost:3000/comments/${commentId}/replies/${replyId}`
-            : `https://localhost:3000/comments/${commentId}/reply`;
-
-        await fetch(url, {
-            method: 'POST',
-            body: formData,
-        }).then(fetchComments);
-
-        // Close the modal after submission
-        document.body.removeChild(modal);
-    };
-
-    // Close modal on cancel
-    document.getElementById('close-modal').onclick = () => {
-        document.body.removeChild(modal);
-    };
-}
-
+  
 // Function to edit a reply
 function editReply(commentId, replyId, currentContent) {
     // Create an edit modal
@@ -332,7 +255,7 @@ function editReply(commentId, replyId, currentContent) {
         }
 
         try {
-            await fetch(`https://localhost:3000/comments/${commentId}/replies/${replyId}`, {
+            await fetch(`https://netdot12-github-io.vercel.app/comments/${commentId}/replies/${replyId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -369,7 +292,7 @@ async function deleteReply(commentId, replyId) {
     if (!confirmDelete) return;
 
     try {
-        await fetch(`https://localhost:3000/comments/${commentId}/replies/${replyId}`, {
+        await fetch(`https://netdot12-github-io.vercel.app/comments/${commentId}/replies/${replyId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -385,55 +308,5 @@ async function deleteReply(commentId, replyId) {
     }
 }
 
-// Extend the renderReplies function
-function renderReplies(replies, commentId) {
-    return replies.map(reply => `
-        <div>
-            <p>
-                ↳ 
-                <img src="${reply.userImage || 'default-avatar.png'}" alt="${reply.user}" width="20" height="20">
-                <strong>${reply.user}</strong>: 
-                <span style="color: blue;">@${reply.replyTo}</span>
-                ${reply.content}
-                <div 
-                    onclick="toggleReplyLike('${commentId}', '${reply._id}', ${reply.likes.includes(currentUser?.id)})" 
-                    style="cursor: pointer; color: ${reply.likes.includes(currentUser?.id) ? 'blue' : 'gray'};">
-                    ❤️ ${reply.likes.length} Like
-                </div>
-                <button onclick="editReply('${commentId}', '${reply._id}', '${reply.content}')">Edit</button>
-                <button onclick="deleteReply('${commentId}', '${reply._id}')">Delete</button>
-            </p>
-            ${reply.media ? renderMedia(reply.media) : ''}
-            <div>
-                <button onclick="replyToComment('${commentId}', '${reply._id}', '${reply.user}', '${reply.userId}')">Reply</button>
-            </div>
-            <div style="margin-left: 20px;">
-                ${renderReplies(reply.replies, commentId)}
-            </div>
-        </div>
-    `).join('');
-}
-  
       window.onload = fetchComments;
-  function formatTimeAgo(date) {
-    const seconds = Math.floor((new Date() - date) / 1000);
-
-    let interval = Math.floor(seconds / 31536000);
-    if (interval >= 1) return interval === 1 ? "1 year ago" : `${interval} years ago`;
-
-    interval = Math.floor(seconds / 2592000);
-    if (interval >= 1) return interval === 1 ? "1 month ago" : `${interval} months ago`;
-
-    interval = Math.floor(seconds / 604800);
-    if (interval >= 1) return interval === 1 ? "1 week ago" : `${interval} weeks ago`;
-
-    interval = Math.floor(seconds / 86400);
-    if (interval >= 1) return interval === 1 ? "1 day ago" : `${interval} days ago`;
-
-    interval = Math.floor(seconds / 3600);
-    if (interval >= 1) return interval === 1 ? "1 hour ago" : `${interval} hours ago`;
-
-    interval = Math.floor(seconds / 60);
-    if (interval >= 1) return interval === 1 ? "1 minute ago" : `${interval} minutes ago`;
-
-  }
+  

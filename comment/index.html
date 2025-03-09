@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="styles.css">
   <style>
    #replies-modal {
@@ -49,6 +53,28 @@
         #replies-modal button:hover {
             background: #a71d2a;
         }
+       .preview-image {
+            max-width: 150px;
+            height: 100px;
+        }
+       .preview-video {
+            width: 200px;
+            height: 150px;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .file-input-container {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 10px;
+        }
+        .file-input-label {
+            cursor: pointer;
+            margin: 5px;
+            font-size: 1.5rem;
+            color: #fff; /* White color for file input label */
+        }
   </style>
     <title>Comment Section with File Uploads</title>
     <script>
@@ -59,45 +85,94 @@
         const userInfo = JSON.parse(localStorage.getItem('userInfo'));
         const currentUser = userInfo ? userInfo.data : null;
 
+let commentsPerPage = 10; // Set a default value
+let currentPage = 0;
+
  async function fetchComments() {
-    const response = await fetch(`http://localhost:3000/comments?pageUrl=${encodeURIComponent(pageUrl)}`);
+    const response = await fetch(`https://netdot12-github-io.vercel.app/comments?pageUrl=${encodeURIComponent(pageUrl)}&page=${currentPage}&limit=${commentsPerPage}&userId=${currentUser.id}`);
     const comments = await response.json();
-    currentReplies = comments; // Update currentReplies here
-    displayComments(comments);
+    currentReplies = comments;
+    displayComments(comments, currentPage > 0);
 }
 
+
+
+
 async function postComment() {
-    const content = document.getElementById('comment-input').value;
-    const imageFile = document.getElementById('image-input').files[0];
-    const videoFile = document.getElementById('video-input').files[0];
-    const currentToken = localStorage.getItem('fcmToken'); // Check if token is stored
+    const contentInput = document.getElementById('comment-input');
+    const imageInput = document.getElementById('image-input');
+    const videoInput = document.getElementById('video-input');
+    const spinner = document.getElementById('spinner');
 
     if (!currentUser) {
         alert("Please log in to comment.");
         return;
     }
 
+    spinner.style.display = 'block';
+
     const formData = new FormData();
     formData.append('pageUrl', pageUrl);
-    formData.append('content', content);
+    formData.append('content', contentInput.value);
     formData.append('user', currentUser.name);
     formData.append('userId', currentUser.sub || currentUser.id);
-    formData.append('userImage', currentUser.picture.data.url || currentUser.picture);
-    formData.append('fcmtoken', currentToken);
+    formData.append('userImage', currentUser.picture);
+    formData.append('fcmtoken', localStorage.getItem('fcmToken'));
 
-    if (imageFile) formData.append('image', imageFile);
-    if (videoFile) formData.append('video', videoFile);
+    if (imageInput.files.length > 0) {
+        formData.append('image', imageInput.files[0]);
+    }
+    if (videoInput.files.length > 0) {
+        formData.append('video', videoInput.files[0]);
+    }
 
-    await fetch('/comments', {
-        method: 'POST',
-        body: formData,
-    });
-     fetchComments();
+    try {
+        const response = await fetch('/comments', { method: 'POST', body: formData });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Success:', data);
+    } catch (error) {
+        console.error('Error occurred:', error);
+    } finally {
+        spinner.style.display = 'none';
+        contentInput.value = '';
+        imageInput.value = ''; // Clear file input
+        videoInput.value = '';
+    }
+
+    fetchComments(); // Refresh comments
 }
-  
 
 fetchComments();
-let commentsPerPage = 10; // Set a default value
+
+  function formatTimeAgo(date) {
+    const seconds = Math.floor((new Date() - date) / 1000);
+
+    let interval = Math.floor(seconds / 31536000);
+    if (interval >= 1) return interval === 1 ? "1 year ago" : `${interval} years ago`;
+
+    interval = Math.floor(seconds / 2592000);
+    if (interval >= 1) return interval === 1 ? "1 month ago" : `${interval} months ago`;
+
+    interval = Math.floor(seconds / 604800);
+    if (interval >= 1) return interval === 1 ? "1 week ago" : `${interval} weeks ago`;
+
+    interval = Math.floor(seconds / 86400);
+    if (interval >= 1) return interval === 1 ? "1 day ago" : `${interval} days ago`;
+
+    interval = Math.floor(seconds / 3600);
+    if (interval >= 1) return interval === 1 ? "1 hour ago" : `${interval} hours ago`;
+
+    interval = Math.floor(seconds / 60);
+    if (interval >= 1) return interval === 1 ? "1 minute ago" : `${interval} minutes ago`;
+
+    return "Just now";
+}
+
 
 function displayComments(comments, append = false) {
     const commentSection = document.getElementById('comment-section');
@@ -117,8 +192,8 @@ function displayComments(comments, append = false) {
                 <p>
                     <img src="${comment.userImage || 'default-avatar.png'}" alt="${comment.user}" width="60" height="60">
                     <strong>${comment.user}</strong> - <span class="time-ago">${timeAgo}</span>
+                  <p>${comment.content}</p>
                 </p>
-                <p>${comment.content}</p>
                 ${comment.image ? `<img src="${comment.image}" alt="Comment Image" width="200">` : ''}
                 ${comment.video ? `<video src="${comment.video}" controls width="300"></video>` : ''}
                 <div>
@@ -276,11 +351,29 @@ function showReplies(commentId, highlightReplyId = null) {
     </script>
 </head>
 <body>
+
+<div id="spinner" class="spinner" style="display: none;"></div>
     <h1>Comment Section</h1>
     <button id="load-more-button" style="display: none;">See More</button>
     <textarea id="comment-input" placeholder="Write a comment..."></textarea>
-    <input type="file" id="image-input" accept="image/*">
-    <input type="file" id="video-input" accept="video/*">
+
+
+ <div class="file-input-container">
+<label for="image-input" class="file-input-label">
+ <i class="fas fa-image"></i> 
+  </label>
+
+<label for="video-input" class="file-input-label">
+        <i class="fas fa-video"></i> 
+</label>
+</div>
+ 
+
+ <input name="image" type="file" id="image-input" accept="image/*">
+
+    <input name="video" type="file" id="video-input" accept="video/*">
+
+    <div id="previewContainer"></div>
     <button onclick="postComment()">Post Comment</button>
     <div id="comment-section"></div>
  <!-- Replies Modal -->
@@ -292,6 +385,53 @@ function showReplies(commentId, highlightReplyId = null) {
         </div>
     </div>
   <script>
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    const previewContainer = document.getElementById('previewContainer');
+
+    // Clear any existing preview
+    previewContainer.innerHTML = '';
+
+    if (file) {
+        const fileType = file.type;
+
+        if (fileType.startsWith('image/')) {
+            // Handle image preview
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.classList.add('preview-image'); // Add class for styling
+            previewContainer.appendChild(img);
+        } else if (fileType.startsWith('video/')) {
+            // Handle video preview
+            const video = document.createElement('video');
+            video.src = URL.createObjectURL(file);
+            video.controls = true; // Add controls to the video element
+            video.classList.add('preview-video'); // Add class for styling
+            previewContainer.appendChild(video);
+        }
+    }
+}
+
+// Attach event listeners to both inputs
+document.getElementById('image-input').addEventListener('change', handleFileSelect);
+document.getElementById('video-input').addEventListener('change', handleFileSelect);
+
+document.addEventListener('DOMContentLoaded', function() {
+    const imageInput = document.getElementById('image-input');
+    const videoInput = document.getElementById('video-input');
+
+    imageInput.addEventListener('change', function() {
+        if (imageInput.files.length > 0) {
+            videoInput.value = '';
+        } 
+    });
+
+    videoInput.addEventListener('change', function() {
+        if (videoInput.files.length > 0) {
+            imageInput.value = '';
+        }
+    });
+});
 // Scroll logic
 window.addEventListener("load", () => {
     const hash = window.location.hash; // Get the hash from the URL
@@ -316,4 +456,3 @@ window.addEventListener("load", () => {
 <script src="comment.js"></script>
 </body>
 </html>
-
