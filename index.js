@@ -90,7 +90,6 @@ app.get('/config/facebook', (req, res) => {
 
 
 const { Octokit } = require("@octokit/rest");
-const fs = require('fs');
 
 // Instantiate Octokit with authentication token
 const octokit = new Octokit({
