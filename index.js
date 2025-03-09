@@ -75,7 +75,7 @@ app.get('/config/facebook', (req, res) => {
 });
 
 
-const { Octokit } = require("@octokit/rest");
+import { Octokit } from '@octokit/rest';  // Use import statement
 
 // Instantiate Octokit with authentication token
 const octokit = new Octokit({
