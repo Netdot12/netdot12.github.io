@@ -1,7 +1,5 @@
 {
- {
-  "type": "module"
-  }
+  "type": "module",
   "scripts": {
     "start": "node index.js"
   },
