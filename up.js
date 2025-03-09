@@ -2,9 +2,7 @@ const { Octokit } = require("@octokit/rest");
 const fs = require('fs');
 
 // Instantiate Octokit with authentication token
-const octokit = new Octokit({
-  auth: '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', // your GitHub token
-});
+
 
 // Path to your file
 const filePath = './okay.js';
